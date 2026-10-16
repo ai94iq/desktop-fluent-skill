@@ -17,7 +17,6 @@ public partial class App : Application
         Culture.Configure(_settings);             // before any window or Tr call
         AppLogging.Configure();
         InitializeComponent();
-        ThemeService.ApplyAccentResources(Resources, _settings.Accent);   // before any control loads
         UnhandledException += (_, e) =>
         {
             Log.Error(e.Exception, "Unhandled UI exception");
@@ -37,6 +36,10 @@ public partial class App : Application
 
         try
         {
+            // Before any control loads. Not in the constructor: reading Application.Resources
+            // there throws 0x8000FFFF (microsoft-ui-xaml#4639).
+            ThemeService.ApplyAccentResources(Resources, _settings.Accent);
+
             var builder = Host.CreateApplicationBuilder();
             builder.Services.AddSerilog();        // uses the static Log.Logger
             builder.Services.AddAppServices(_settings);

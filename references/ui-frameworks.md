@@ -55,7 +55,7 @@ Everything in Core, Data, the tests, the docs, scripts and installer is identica
 - **Startup:** there's no `OnExit`. Clean-up runs on `MainWindow.Closed`. A second instance exits silently.
 - **Dialogs:** `IDialogService` is async, and the WinUI version uses `ContentDialog` with the window's `XamlRoot`. Never create a `ContentDialog` elsewhere.
 - **UI thread:** use `DispatcherQueue`. `DataChangeNotifier` is created on the UI thread at startup.
-- **Accent:** `ThemeService.ApplyAccentResources` sets the `SystemAccentColor*` resources in the `App` constructor. Changing the accent requires a restart.
+- **Accent:** `ThemeService.ApplyAccentResources` sets the `SystemAccentColor*` resources at the start of `OnLaunched`, before any window. Never in the `App` constructor: reading `Application.Resources` there throws 0x8000FFFF. Changing the accent requires a restart.
 - **Backdrop:** use `MicaBackdrop` when `MicaController.IsSupported()`; otherwise apply the theme's page background brush.
 - **Navigation:** the built-in `NavigationView` with a `Frame`. Pages are resolved from DI.
 - **Triggers:** WinUI has no DataTriggers. Use converters (`LoadStateVisible`) or VisualStateManager.
