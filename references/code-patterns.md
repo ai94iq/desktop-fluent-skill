@@ -142,7 +142,7 @@ Rules:
   - resx keys match and every key used exists (`LocalizationTests`);
   - every `AppIcon Kind` used exists (`IconTests`);
   - migrations apply and backups are written (`DatabaseInitializerTests`).
-- XAML layout and visuals aren't unit-tested. After a UI change, tell the user in one line what to look at: the screen in each shipped language, light and dark.
+- XAML layout and visuals aren't unit-tested. After a UI change, start the built app once to see it opens, then ask the user to look (SKILL.md rule 7): name the screen, each shipped language, light and dark.
 - `[Fact(Skip = ...)]` and deleting failing tests need the user's approval.
 
 ## 6. Threading

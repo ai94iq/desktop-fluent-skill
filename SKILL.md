@@ -28,10 +28,12 @@ This file holds the identity, the agent rules and the locked stack. The how-to l
    1. Write the tests first (`code-patterns.md` section 5).
    2. Implement until they pass (`test.bat --no-pause`).
    3. Update the affected docs (`project-setup.md` section 7).
-   4. Commit in the required format (`project-setup.md` section 6). The pre-commit hook runs every test and blocks the commit on failure. Never use `--no-verify`, and never skip or delete a test to make it pass.
+   4. Start the built app once (`build.bat --no-pause`, then launch `artifacts\publish\win-x64\<Product>.exe` detached) and confirm it opens with no errors in its log. Green tests alone don't prove the screen works.
+   5. Commit in the required format (`project-setup.md` section 6). The pre-commit hook runs every test and blocks the commit on failure. Never use `--no-verify`, and never skip or delete a test to make it pass.
 6. **Scripts:** always pass `--no-pause`. Never run `run.bat` yourself; it opens the app and waits until it's closed.
-7. **Git safety:** never push, force-push, rebase, amend or rewrite history unless the user asks. If `git config user.name` is empty, ask for name and email; never invent an identity.
-8. **Existing projects:** read `Directory.Packages.props` and the `.csproj` files first. Keep installed major versions and don't upgrade without asking. Bring in template pieces by copying the matching file from `assets/template/`, never by rewriting it from memory (`project-setup.md` section 4).
+7. **UI changes:** the user reviews every visible change before it's pushed. Don't take screenshots yourself (they can capture private data); ask the user to look, naming the screen, the languages and light/dark. Before sending synthetic keys or clicks, check the app's window is in the foreground, or the input lands in another app.
+8. **Git safety:** never push, force-push, rebase, amend or rewrite history unless the user asks. If `git config user.name` is empty, ask for name and email; never invent an identity.
+9. **Existing projects:** read `Directory.Packages.props` and the `.csproj` files first. Keep installed major versions and don't upgrade without asking. Bring in template pieces by copying the matching file from `assets/template/`, never by rewriting it from memory (`project-setup.md` section 4).
 
 ## Token budget
 
