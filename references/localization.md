@@ -1,6 +1,6 @@
 # Localization, Arabic and RTL
 
-Read this when adding strings, dates, numbers or any right-to-left UI. The rules apply to every app: no user-visible string outside resx, dates and numbers only through services. The Arabic and RTL rules apply whenever the app ships a right-to-left UI — the template supports it out of the box, it isn't required.
+Read this when adding strings, dates, numbers or any right-to-left UI. The rules apply to every app: no user-visible string outside resx, dates and numbers only through services. The Arabic and RTL rules apply whenever the app ships a right-to-left UI - the template supports it out of the box, it isn't required.
 
 ## Strings
 
@@ -23,10 +23,10 @@ Read this when adding strings, dates, numbers or any right-to-left UI. The rules
 ## Direction (RTL)
 
 - Every window calls `this.ApplyCultureDirection()`. Never set RTL on individual controls. Exceptions:
-  - images and logos → `FlowDirection="LeftToRight"`;
-  - LTR-content inputs (email, URL, phone, path, code, password, username) → `FlowDirection="LeftToRight"`;
-  - directional icons → `IsDirectional="True"`;
-  - dialogs → `IDialogService`.
+  - images and logos: `FlowDirection="LeftToRight"`;
+  - LTR-content inputs (email, URL, phone, path, code, password, username): `FlowDirection="LeftToRight"`;
+  - directional icons: `IsDirectional="True"`;
+  - dialogs: `IDialogService`.
 - Mixed text: put LTR fragments in their own `Run` with `FlowDirection="LeftToRight"`, or follow them with RLM (`\u200F`).
 
 ## Fonts

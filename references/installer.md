@@ -1,6 +1,6 @@
 # Installer: WiX Toolset v6 MSI
 
-Contents
+## Contents
 1. Fixed decisions
 2. Files
 3. WinUI 3 projects
@@ -41,7 +41,7 @@ The installer isn't part of the solution. `package.bat` runs it after `build.bat
 
 ## 3. WinUI 3 projects
 
-Nothing changes in the installer. The self-contained, unpackaged publish output already includes the Windows App SDK runtime, so the MSI is larger (about 40–60 MB more) and needs no prerequisites.
+Nothing changes in the installer. The self-contained, unpackaged publish output already includes the Windows App SDK runtime, so the MSI is larger (about 40-60 MB more) and needs no prerequisites.
 
 ## 4. Arabic installer text
 
@@ -83,6 +83,6 @@ winget is how most users install a desktop app. Keep the manifests in `packaging
 - On a version tag, the release pipeline builds the MSI, publishes the GitHub release, then rewrites `PackageVersion`, `InstallerUrl`, `InstallerSha256`, `ProductCode` and the release-notes URL in the three manifest files.
 - The SHA256 and the product code must come from the CI-built MSI, never from a local `package.bat` output: MSIs are not byte-reproducible, so the hash and product code differ per build.
 - Submission runs `wingetcreate submit` with a classic GitHub token that has the `public_repo` scope, stored as the repository secret `WINGET_TOKEN`. Without the secret, skip the submission and leave the refreshed manifests for a manual run.
-- **Never reference `secrets.*` in a step `if:`** — the workflow becomes invalid and fails at startup with zero jobs. Put the secret in a job-level `env` and test `env.TOKEN != ''` in the step instead.
+- **Never reference `secrets.*` in a step `if:`** - the workflow becomes invalid and fails at startup with zero jobs. Put the secret in a job-level `env` and test `env.TOKEN != ''` in the step instead.
 - Manual fallback: download the MSI attached to the release, compute its SHA256, read its product code, update the three files, then run `wingetcreate submit --prtitle "New version: Publisher.MyApp version X.Y.Z" --token <token> packaging\winget`.
 - winget's validation runs on the pull request; once it is merged, `winget install Publisher.MyApp` works.

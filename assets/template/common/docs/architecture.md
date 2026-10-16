@@ -2,7 +2,7 @@
 
 ## Projects and dependencies
 
-App → Core, Data. Data → Core. Core → nothing.
+App depends on Core and Data. Data depends on Core. Core depends on nothing.
 
 - **__Product__.Core** (net10.0): models, interfaces, text helpers, caching helper, layout logic. Never WPF or SQL.
 - **__Product__.Data** (net10.0): SQLite + Dapper repositories, migrations, backups. Never WPF.
@@ -10,11 +10,11 @@ App → Core, Data. Data → Core. Core → nothing.
 
 ## Startup flow
 
-Settings → culture → logging → single instance → host → backup and migrate → main window. Pages load their own data when navigated to.
+Settings, culture, logging, single instance, host, backup and migrate, then the main window. Pages load their own data when navigated to.
 
 ## Data flow
 
-ViewModel → repository (Task.Run + Dapper) → SQLite. Writes evict cache keys and send `DataChanged`; open pages reload.
+ViewModel, then repository (Task.Run + Dapper), then SQLite. Writes evict cache keys and send `DataChanged`; open pages reload.
 
 ## Loading states
 
@@ -22,7 +22,7 @@ Every page ViewModel derives from `PageViewModel` (Idle, Loading, Loaded, Empty,
 
 ## Caching layers
 
-ViewModel state → identity maps → IMemoryCache (`GetOrLoadAsync`) → disk cache (`cache\`) → SQLite page cache.
+Checked in this order: ViewModel state, identity maps, IMemoryCache (`GetOrLoadAsync`), disk cache (`cache\`), SQLite page cache.
 
 ## Feature map
 

@@ -2,12 +2,12 @@
 
 An agent skill for building modern Windows 10/11 desktop apps in C#: a
 prescriptive technology stack, reference guides, and scripts that scaffold a
-complete, tested project in one command — with first-class Arabic and
+complete, tested project in one command - with first-class Arabic and
 right-to-left support.
 
 ## What it gives you
 
-- **One-command scaffold** — `new-project.bat` creates a WPF + WPF-UI (default)
+- **One-command scaffold** - `new-project.bat` creates a WPF + WPF-UI (default)
   or WinUI 3 app with Core/Data/App projects, three xUnit v3 test projects,
   repo scripts, docs and a WiX v6 MSI, then runs the tests and makes the first
   commit.
@@ -16,10 +16,10 @@ right-to-left support.
   Dapper (numbered SQL migrations), IMemoryCache, System.Text.Json, resx
   localization, xUnit v3 + NSubstitute, Central Package Management, `.slnx`,
   `.bat` scripts.
-- **Localization that holds up** — dates and numbers follow the system locale,
+- **Localization that holds up** - dates and numbers follow the system locale,
   Arabic plurals via CLDR categories, Arabic text normalization for search,
   RTL layout with correct handling of directional icons and LTR fields.
-- **Rules for agent work** — test-first definition of done, a pre-commit hook
+- **Rules for agent work** - test-first definition of done, a pre-commit hook
   that runs all tests, a fixed commit format, and token rules so build output
   is logged instead of read in full.
 

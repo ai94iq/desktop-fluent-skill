@@ -1,6 +1,6 @@
 # Project setup
 
-Contents
+## Contents
 1. Create a new project (one command)
 2. What the generator does
 3. When it fails
@@ -94,7 +94,7 @@ Repo scripts are ASCII-only with CRLF line endings, and start with `cd /d "%~dp0
 ```
 <project>: <type>: <short title>
 
-<body: what changed and why, 1–6 lines, wrapped at 72 characters>
+<body: what changed and why, 1-6 lines, wrapped at 72 characters>
 ```
 
 - `project`: `app`, `core`, `data`, `tests`, `installer`, `docs`, or `repo` (scripts, props files, solution).

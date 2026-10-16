@@ -2,7 +2,7 @@
 
 XAML examples use WPF + WPF-UI (`ui:` = `http://schemas.lepo.co/wpfui/2022/xaml`). WinUI 3 differences are noted inline and mapped in `ui-frameworks.md`. `l:` is the localization namespace, `common:` is `MyApp.App.Common`.
 
-Contents
+## Contents
 1. Principles
 2. Layout and spacing
 3. Typography
@@ -39,7 +39,7 @@ Contents
   | `CardRadius` | 8 |
 
 - **Forms are a single column,** at most 640 px wide, starting at the reading start (the right edge in Arabic). Labels go above fields, never beside them; Arabic labels are long and side labels break in RTL.
-- **Lists and content** stretch to the window, with a minimum window size of 800×500.
+- **Lists and content** stretch to the window, with a minimum window size of 800x500.
 - **Page structure:** title (Title style), then an optional one-line description (Body, secondary text color), then sections, each with a Subtitle header.
 - **Alignment:** everything aligns to the start. Center only empty states and loading indicators.
 - Write layout in start/end terms. In RTL, WPF and WinUI mirror `HorizontalAlignment`, margins and column order automatically, so never hand-flip values.
@@ -265,7 +265,7 @@ Show a counter (`Tr.Format("Common_CharCount", n, max)`) only when the limit is 
 - Order options logically (frequency or natural order); use alphabetical order only for long lists.
 - Above about 15 options, use an `AutoSuggestBox` filtered with `ArabicText.NormalizeForSearch`.
 
-**Single choice (2–4 options):** radio buttons, stacked vertically, all visible, one preselected. In WinUI use the `RadioButtons` control with `Header`.
+**Single choice (2-4 options):** radio buttons, stacked vertically, all visible, one preselected. In WinUI use the `RadioButtons` control with `Header`.
 
 **Multiple choice:**
 - Up to about 7 options: a list of check boxes, each bound to a `Selectable<T>(T Value, string Label) { IsSelected }` item.
@@ -280,7 +280,7 @@ Show a counter (`Tr.Format("Common_CharCount", n, max)`) only when the limit is 
 
 - Its calendar follows the app culture, which follows the system locale by default.
 - Show the chosen date elsewhere through `IDateFormatter`.
-- Partial dates (unknown month or day): a small composite input — a precision `ComboBox` (unknown, year, month, day), a year `NumberBox`, and month/day `ComboBox`es shown according to the precision. Store the precision alongside the date.
+- Partial dates (unknown month or day): a small composite input - a precision `ComboBox` (unknown, year, month, day), a year `NumberBox`, and month/day `ComboBox`es shown according to the precision. Store the precision alongside the date.
 
 **Search:** `ui:AutoSuggestBox` or a text box with a leading `AppIcon Kind="Search"`. Search runs as the user types (300 ms debounce, Arabic-normalized), and Esc clears it.
 
@@ -367,7 +367,7 @@ public static class PasswordHasher   // Core/Security
 - Focus visuals stay visible; never set `FocusVisualStyle="{x:Null}"`.
 - Every icon-only control and image has `AutomationProperties.Name`. Fields are labeled with `AutomationProperties.LabeledBy` or a `Header`.
 - Text contrast is at least 4.5:1, which theme brushes already meet. Never carry meaning by color alone; pair it with an icon or text.
-- Click targets are at least 32×32 px (40 for touch-first WinUI screens).
+- Click targets are at least 32x32 px (40 for touch-first WinUI screens).
 
 ## 13. RTL screen checklist
 

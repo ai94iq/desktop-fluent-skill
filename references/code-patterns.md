@@ -2,7 +2,7 @@
 
 The template is the source of truth for infrastructure code. This file indexes it and holds the coding rules every feature reuses. Replace `MyApp` with the product name.
 
-Contents
+## Contents
 1. Template index
 2. Solution layout
 3. DRY and KISS
@@ -46,26 +46,26 @@ New projects get all of this from `new-project.bat`. In an existing project, cop
 
 ```
 MyApp/
-├── MyApp.slnx, global.json, Directory.Build.props, Directory.Packages.props
-├── .editorconfig, .gitignore, .gitattributes, .githooks/pre-commit
-├── README.md, CHANGELOG.md
-├── run.bat  build.bat  test.bat  package.bat  logs.bat  clean.bat
-├── docs/            architecture, database, localization, release, known-issues, decisions/ (ADRs)
-├── src/
-│   ├── MyApp.App/   UI (WPF + WPF-UI, or WinUI 3)
-│   │   ├── Assets/          app.ico, Fonts/
-│   │   ├── Common/          PageViewModel, LoadState, LoadStateOverlay, AppIcon, converters, shared controls
-│   │   ├── Features/<Name>/ <Name>Page.xaml(.cs), <Name>ViewModel.cs, feature-only controls
-│   │   ├── Hosting/         startup pieces: AppPaths, AppSettings, SettingsStore, Culture, AppLogging, ServiceRegistration
-│   │   ├── Localization/    Tr, TrExtension
-│   │   ├── Resources/       Strings.resx (neutral), Strings.en.resx, Styles.xaml, Icons.g.cs, icons.txt
-│   │   ├── Services/        DialogService, DateFormatter, ThemeService, DataChangeNotifier
-│   │   └── Shell/           MainWindow, MainWindowViewModel
-│   ├── MyApp.Core/  pure C#: Models, Abstractions, Caching, Text, Theming
-│   └── MyApp.Data/  SQLite + Dapper: Migrations/, Repositories/, connection factory, initializer
-├── tests/           MyApp.Core.Tests, MyApp.Data.Tests, MyApp.App.Tests
-├── installer/       WiX v6 project
-└── artifacts/       build output (git-ignored)
+    MyApp.slnx, global.json, Directory.Build.props, Directory.Packages.props
+    .editorconfig, .gitignore, .gitattributes, .githooks/pre-commit
+    README.md, CHANGELOG.md
+    run.bat  build.bat  test.bat  package.bat  logs.bat  clean.bat
+    docs/            architecture, database, localization, release, known-issues, decisions/ (ADRs)
+    src/
+        MyApp.App/   UI (WPF + WPF-UI, or WinUI 3)
+            Assets/          app.ico, Fonts/
+            Common/          PageViewModel, LoadState, LoadStateOverlay, AppIcon, converters, shared controls
+            Features/<Name>/ <Name>Page.xaml(.cs), <Name>ViewModel.cs, feature-only controls
+            Hosting/         startup pieces: AppPaths, AppSettings, SettingsStore, Culture, AppLogging, ServiceRegistration
+            Localization/    Tr, TrExtension
+            Resources/       Strings.resx (neutral), Strings.en.resx, Styles.xaml, Icons.g.cs, icons.txt
+            Services/        DialogService, DateFormatter, ThemeService, DataChangeNotifier
+            Shell/           MainWindow, MainWindowViewModel
+        MyApp.Core/  pure C#: Models, Abstractions, Caching, Text, Theming
+        MyApp.Data/  SQLite + Dapper: Migrations/, Repositories/, connection factory, initializer
+    tests/           MyApp.Core.Tests, MyApp.Data.Tests, MyApp.App.Tests
+    installer/       WiX v6 project
+    artifacts/       build output (git-ignored)
 ```
 
 Dependency rules: **Core** (`net10.0`) references nothing; **Data** references Core; **App** references both. The `net10.0` targets make it impossible for UI types to leak into Core or Data. New screens go in `Features/<Name>/`. Code used by two or more features goes in `Common/` (UI) or Core (logic).
@@ -99,7 +99,7 @@ The template lives in the skill folder: `assets/template/common/` (shared) plus 
 
 **KISS: the simplest thing that works.**
 - No speculative abstractions. Interfaces exist only for things a test swaps out: services and repositories used by ViewModels. Helpers stay static or concrete.
-- Inheritance only as `PageViewModel` → page ViewModel (one level). No generic repositories, no reflection, no events where a method call works.
+- Inheritance only as `PageViewModel` to page ViewModel (one level). No generic repositories, no reflection, no events where a method call works.
 - Use early returns and keep nesting to 3 levels or fewer.
 - Use built-in controls first. Write a custom control only when it's used in two or more places.
 
@@ -204,7 +204,7 @@ MVVM rules:
 - Validation lives in the ViewModel as `XError` string properties (null when valid), with `CanSave` derived from them (`ui-ux.md`).
 - Code-behind only for view concerns (focus, scroll, `PasswordBox`). Cross-ViewModel messages use `WeakReferenceMessenger`.
 
-Startup: the template's `App.xaml.cs` runs, in order: settings → culture and RTL → logging and exception handlers → single-instance check → host and DI → backup and migrate off the UI thread → show the main window. Pages load their own data when navigated to, never in constructors. DI lifetimes: shell, repositories, factories and services are Singleton; pages and their ViewModels are Transient.
+Startup: the template's `App.xaml.cs` runs, in order: settings, culture and RTL, logging and exception handlers, single-instance check, host and DI, backup and migrate off the UI thread, then show the main window. Pages load their own data when navigated to, never in constructors. DI lifetimes: shell, repositories, factories and services are Singleton; pages and their ViewModels are Transient.
 
 ## 8. Paged list
 
@@ -310,7 +310,7 @@ public sealed class PersonRepository(
             changes.Notify(new DataChanged("person", id));
         }, ct);
 
-    private PersonDetails? Load(long id) { /* Dapper query → row → domain record */ }
+    private PersonDetails? Load(long id) { /* Dapper query, then row, then domain record */ }
 }
 ```
 

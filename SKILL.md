@@ -3,11 +3,20 @@ name: win-desktop-fluent
 description: Prescriptive rules and scaffolding scripts for native Windows 10/11 desktop apps in C# with WPF + WPF-UI (default) or WinUI 3, CommunityToolkit.Mvvm, Generic Host, Serilog, SQLite with Dapper, IMemoryCache, resx localization and a WiX MSI, with modern outline-icon styling, light/dark/accent theming, test-first automation and DRY/KISS. Any UI language works; dates and numbers follow the system locale by default, and Arabic and other right-to-left languages get first-class support (RTL flow, Arabic plurals, Arabic text search). Covers project scaffolding, git commit format, bat scripts, forms and inputs, loading states, lazy loading, caching and token-efficient agent behavior. Use whenever the user creates, scaffolds, writes, reviews, styles, tests, builds, packages, commits or debugs a Windows desktop app, XAML, ViewModels, forms, SQLite, localization or installers, or mentions WPF, WinUI, Arabic, RTL, WiX, MSI, icons, themes or dark mode. Agents using this skill reply in the language the user writes in.
 ---
 
-# Windows desktop apps — Windows 10 & 11
+# Windows desktop apps - Windows 10 & 11
 
 This skill is prescriptive. Every choice in it is final for projects that use it. Goals, in priority order: the UI thread never blocks, nothing loads before it's needed, text, dates and numbers are correct in every language the app ships (Arabic/RTL included), the UI looks clean and modern, and the app behaves the same on Windows 10 and 11.
 
-This file holds the identity, the agent rules and the locked stack. The how-to lives in `references/` — read only what the task needs. Humans can do the same tasks without an agent from the keyboard menu: `scripts\tui.bat` on Windows, `scripts/tui.sh` on macOS/Linux/Git Bash.
+This file holds the identity, the agent rules and the locked stack. The how-to lives in `references/` - read only what the task needs. Humans can do the same tasks without an agent from the keyboard menu: `scripts\tui.bat` on Windows, `scripts/tui.sh` on macOS/Linux/Git Bash.
+
+## Contents
+
+- [Agent rules](#agent-rules-read-first)
+- [Token budget](#token-budget)
+- [Locked stack](#locked-stack)
+- [Build output is never read in full](#build-output-is-never-read-in-full)
+- [References](#references---read-only-what-you-need)
+- [Review checklist](#review-checklist)
 
 ## Agent rules (read first)
 
@@ -16,13 +25,13 @@ This file holds the identity, the agent rules and the locked stack. The how-to l
 3. **Keep replies short.** By default, 5 lines or fewer: what changed in terms the user sees, the result, then the next step or one question. Don't paste code, file lists or plans into the chat, and don't restate the request. Go longer only when the user asks for more detail.
 4. **Use only what this skill specifies.** Don't add, replace or "try" any library, framework, tool, file format or pattern that isn't listed, even one you consider equivalent. If a need truly isn't covered, stop, propose one option in one plain sentence, and wait. Record every approved addition as an ADR (`docs/decisions/`).
 5. **Definition of done** for every feature, in this order:
-   1. Write the tests first (`code-patterns.md` §5).
+   1. Write the tests first (`code-patterns.md` section 5).
    2. Implement until they pass (`test.bat --no-pause`).
-   3. Update the affected docs (`project-setup.md` §7).
-   4. Commit in the required format (`project-setup.md` §6). The pre-commit hook runs every test and blocks the commit on failure. Never use `--no-verify`, and never skip or delete a test to make it pass.
+   3. Update the affected docs (`project-setup.md` section 7).
+   4. Commit in the required format (`project-setup.md` section 6). The pre-commit hook runs every test and blocks the commit on failure. Never use `--no-verify`, and never skip or delete a test to make it pass.
 6. **Scripts:** always pass `--no-pause`. Never run `run.bat` yourself; it opens the app and waits until it's closed.
 7. **Git safety:** never push, force-push, rebase, amend or rewrite history unless the user asks. If `git config user.name` is empty, ask for name and email; never invent an identity.
-8. **Existing projects:** read `Directory.Packages.props` and the `.csproj` files first. Keep installed major versions and don't upgrade without asking. Bring in template pieces by copying the matching file from `assets/template/`, never by rewriting it from memory (`project-setup.md` §4).
+8. **Existing projects:** read `Directory.Packages.props` and the `.csproj` files first. Keep installed major versions and don't upgrade without asking. Bring in template pieces by copying the matching file from `assets/template/`, never by rewriting it from memory (`project-setup.md` section 4).
 
 ## Token budget
 
@@ -30,14 +39,14 @@ Input:
 - Find before you read. Search with `grep`/`rg` for the symbol or key, then view only the line range you need.
 - Never re-read a file you already have unless it changed.
 - Never open `bin/`, `obj/`, `Icons.g.cs`, fonts or whole `.resx` files. Search resx for the keys you need.
-- Build output: never read whole logs. `test.bat`, `build.bat` and `package.bat` capture their full output to `artifacts\logs\<script>.log` and print only the error lines.
+- Build output: never read whole logs (see below).
 - Load one reference at a time, only when the task needs it.
 - Generate, don't write: use `new-project.bat` for a new project and `add-icons.bat` for icons, never hand-written boilerplate or SVG paths.
 
 Output:
 - Edit with small targeted replacements. Never rewrite a whole file to change a few lines.
 - Don't echo back code you wrote, and don't summarize diffs in chat.
-- Batch related edits into one step. Keep commit bodies to the point (1–6 lines).
+- Batch related edits into one step. Keep commit bodies to the point (1-6 lines).
 
 ## Locked stack
 
@@ -73,26 +82,26 @@ UI languages: **the app chooses one neutral resx language plus satellites. The t
 
 ## Build output is never read in full
 
-Every dotnet-running repo script writes its full output into `artifacts\logs\<script>.log` and prints one line — `OK`, or `FAILED` plus the error lines. Agents:
+Every dotnet-running repo script writes its full output into `artifacts\logs\<script>.log` and prints one line - `OK`, or `FAILED` plus the error lines. Agents:
 - run `dotnet test`, `dotnet publish` and the WiX build only through `test.bat`, `build.bat` and `package.bat`, so the log capture stays in one place;
 - never `type` or re-run a script to see the whole log; use `logs.bat <script> error`, or `grep` the log file for the specific error first;
 - never paste a full build or test log into the chat, even on failure.
 
-## References — read only what you need
+## References - read only what you need
 
 | When | Read |
 |---|---|
-| New project, git, scripts, docs | `project-setup.md` |
-| Writing code (startup, data, caching, conventions, testing, threading, logging) | `code-patterns.md` |
-| Strings, dates, digits, Arabic, RTL | `localization.md` |
-| Screens, forms, inputs, styling, icons, themes | `ui-ux.md` |
-| WPF-UI vs WinUI 3, WinUI-specific rules | `ui-frameworks.md` |
-| Update check, first-run welcome, encrypted database | `app-features.md` |
-| Installer and releases | `installer.md` |
+| New project, git, scripts, docs | [project-setup.md](references/project-setup.md) |
+| Writing code (startup, data, caching, conventions, testing, threading, logging) | [code-patterns.md](references/code-patterns.md) |
+| Strings, dates, digits, Arabic, RTL | [localization.md](references/localization.md) |
+| Screens, forms, inputs, styling, icons, themes | [ui-ux.md](references/ui-ux.md) |
+| WPF-UI vs WinUI 3, WinUI-specific rules | [ui-frameworks.md](references/ui-frameworks.md) |
+| Update check, first-run welcome, encrypted database | [app-features.md](references/app-features.md) |
+| Installer and releases | [installer.md](references/installer.md) |
 
 ## Review checklist
 
-1. Anything outside the locked stack or the reference patterns. Duplicated logic that already has a home (`code-patterns.md` §3).
+1. Anything outside the locked stack or the reference patterns. Duplicated logic that already has a home (`code-patterns.md` section 3).
 2. Missing tests for new behavior, skipped tests, stale docs, a malformed commit message, files over their limits.
 3. Blocking calls on the UI thread; UI types in ViewModels; data loaded in constructors.
 4. SQL built by concatenation, culture-formatted stored dates, `int` in Dapper rows, edited migrations, `OFFSET` paging, a query per row.

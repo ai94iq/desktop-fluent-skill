@@ -2,7 +2,7 @@
 
 Patterns for features many products need but the base template does not include. Add one only when the product asks, and record the decision as an ADR (`docs/decisions/`, agent rule 4).
 
-Contents
+## Contents
 1. Update check (GitHub releases)
 2. First-run welcome
 3. Encrypted database
