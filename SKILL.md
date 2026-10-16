@@ -100,6 +100,7 @@ Every dotnet-running repo script writes its full output into `artifacts\logs\<sc
 | WPF-UI vs WinUI 3, WinUI-specific rules | [ui-frameworks.md](references/ui-frameworks.md) |
 | Update check, first-run welcome, encrypted database | [app-features.md](references/app-features.md) |
 | Installer and releases | [installer.md](references/installer.md) |
+| Linux and macOS too: projects, platform interfaces, per-OS limits, .sh twins, packaging, CI | [cross-platform.md](references/cross-platform.md) |
 
 ## Review checklist
 
@@ -113,3 +114,4 @@ Every dotnet-running repo script writes its full output into `artifacts\logs\<sc
 8. Styling slop: gradients, shadows, colored boxes, mixed icon styles, literal margins instead of tokens.
 9. Windows 11-only visuals without a Windows 10 fallback; lost list virtualization.
 10. Interpolated log messages; personal data in logs.
+11. Cross-platform: OS checks outside `Platform/`, OS calls without `[SupportedOSPlatform]`, a `.bat` changed without its `.sh` twin.
