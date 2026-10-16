@@ -134,9 +134,20 @@ static void CheckMarkdown(string root, string relative, string text, List<string
     foreach (System.Text.RegularExpressions.Match link in
              System.Text.RegularExpressions.Regex.Matches(text, @"\]\(([^)#:\s]+\.md)(#[^)]*)?\)"))
     {
-        if (!File.Exists(Path.Combine(folder, link.Groups[1].Value)))
+        var target = Path.Combine(folder, link.Groups[1].Value);
+        if (!File.Exists(target) && !File.Exists(InCommonLayer(root, target)))
             problems.Add($"{relative}: broken link {link.Groups[1].Value}");
     }
+}
+
+// A UI layer (assets/template/wpf, ...) is copied over common, so its docs may link common's files.
+static string InCommonLayer(string root, string path)
+{
+    var parts = Path.GetRelativePath(Path.Combine(root, "assets", "template"), path)
+        .Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+    return parts.Length > 1 && parts[0] != ".."
+        ? Path.Combine([root, "assets", "template", "common", .. parts[1..]])
+        : path;
 }
 
 // Every reference must be linked straight from SKILL.md (one level deep).

@@ -10,8 +10,10 @@ const string Source = "https://raw.githubusercontent.com/microsoft/fluentui-syst
 try
 {
     if (args.Length < 1) return Fail("Usage: add-icons.bat <ProjectRoot> [icon_name ...]");
-    var appDir = Directory.GetDirectories(Path.Combine(Path.GetFullPath(args[0]), "src"), "*.App").SingleOrDefault()
-        ?? throw new InvalidOperationException("No src\\*.App project found under the project root.");
+    // Icons.g.cs lives in the project that holds Resources: App (WPF, WinUI) or Presentation (Avalonia).
+    var src = Path.Combine(Path.GetFullPath(args[0]), "src");
+    var appDir = Directory.GetDirectories(src, "*.App").Concat(Directory.GetDirectories(src, "*.Presentation")).SingleOrDefault()
+        ?? throw new InvalidOperationException("No src\\*.App or src\\*.Presentation project found under the project root.");
     var appNamespace = Path.GetFileName(appDir);
     var listFile = Path.Combine(appDir, "Resources", "icons.txt");
 

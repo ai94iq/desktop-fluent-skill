@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- View models, settings, Tr and resx, portable services. No UI framework or OS types:
+       it builds and tests the same on Windows, Linux and macOS. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>__Product__.Presentation</RootNamespace>
+    <NeutralLanguage>ar-SA</NeutralLanguage>
+    <SatelliteResourceLanguages>ar;en</SatelliteResourceLanguages>
+    <!-- Must stay false: Arabic culture data is required -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Serilog.Extensions.Hosting" />
+    <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="Serilog.Sinks.Async" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\__Product__.Core\__Product__.Core.csproj" />
+    <ProjectReference Include="..\__Product__.Data\__Product__.Data.csproj" />
+  </ItemGroup>
+</Project>

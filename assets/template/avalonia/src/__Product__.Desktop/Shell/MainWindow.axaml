@@ -1,0 +1,18 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="using:__Product__.Desktop.Localization"
+        xmlns:vm="using:__Product__.Presentation.Shell"
+        x:Class="__Product__.Desktop.Shell.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="{l:Tr Key=App_Name}"
+        Width="1200"
+        Height="800"
+        MinWidth="800"
+        MinHeight="500"
+        WindowStartupLocation="CenterScreen">
+  <!-- The system title bar on every OS. For content in the title bar, see ui-frameworks.md section 7. -->
+  <TextBlock Text="{l:Tr Key=App_Welcome}"
+             FontSize="20"
+             HorizontalAlignment="Center"
+             VerticalAlignment="Center" />
+</Window>

@@ -42,7 +42,7 @@ Relay this in the user's language, in your own words, in three or four short lin
 | RTL | `FlowDirection` on the root, complete | `FlowDirection` on the root, complete | `FlowDirection` on each window from the culture, complete |
 | Arabic-Indic digits | Yes (`NumberSubstitution`) | No built-in way; setting hidden | Not checked; keep the setting hidden until tested |
 | Theme / accent | Live switching for both | Theme live; accent applied at startup (restart) | Both live (`{DynamicResource}` Fluent keys, `ThemeService`) |
-| Dialogs | Native message box with RTL flags | `ContentDialog` (async, needs `XamlRoot`) | Drawn inside their window (an inline dialog control); no `ContentDialog` |
+| Dialogs | Native message box with RTL flags | `ContentDialog` (async, needs `XamlRoot`) | A small modal window (`DialogService`); no `ContentDialog`. Draw a dialog inside its window when focus must stay put (a flyout) |
 | Custom drawing at scale | `DrawingVisual`, fine for 3,000+ items | Shapes and Canvas up to ~3,000; beyond that needs Win2D (not allowed) | Not checked |
 | Designer | Visual Studio XAML designer | No designer; hot reload only | Not checked |
 | Third-party controls | Large ecosystem | Smaller ecosystem | Not checked |

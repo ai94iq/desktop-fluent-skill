@@ -1,0 +1,14 @@
+global using System.Globalization;
+global using System.IO;
+global using CommunityToolkit.Mvvm.ComponentModel;
+global using CommunityToolkit.Mvvm.Input;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using __Product__.Presentation.Common;
+global using __Product__.Presentation.Hosting;
+global using __Product__.Presentation.Localization;
+global using __Product__.Presentation.Services;
+global using __Product__.Core.Abstractions;
+global using __Product__.Core.Models;
+global using __Product__.Core.Text;
+global using __Product__.Data;

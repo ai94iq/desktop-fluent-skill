@@ -16,7 +16,7 @@
    - the product name (an English PascalCase identifier, e.g. `MyApp`; the display name in the app language goes into `App_Name` in resx later);
    - the publisher name;
    - the target folder;
-   - WPF-UI or WinUI 3 (`ui-frameworks.md`; recommend WPF-UI);
+   - whether it must run on Linux or macOS too (then Avalonia), otherwise WPF-UI or WinUI 3 (`ui-frameworks.md`; recommend WPF-UI);
    - the neutral resx language if not Arabic (the template ships Arabic neutral + English satellite; another pair means swapping the resx files and culture defaults after scaffold).
 2. Check `dotnet --version` is 10.x and `git --version` works. If not, tell the user exactly what to install (.NET 10 SDK, Git for Windows).
 3. Run, from any folder:
@@ -25,7 +25,7 @@
 "<skill folder>\scripts\new-project.bat" MyApp "My Company" C:\Projects\MyApp --ui wpf
 ```
 
-The first run takes a few minutes (package restore and tests). It prints six numbered steps and then `OK` or `FAILED: <reason>`. Report the result to the user in one or two lines.
+Use `--ui winui` or `--ui avalonia` for the other variants. On Linux or macOS, run `<skill folder>/scripts/new-project.sh` with the same arguments (`--ui avalonia` is the one that builds there). The first run takes a few minutes (package restore and tests). It prints six numbered steps and then `OK` or `FAILED: <reason>`. Report the result to the user in one or two lines.
 
 ## 2. What the generator does
 
@@ -70,7 +70,7 @@ For a project not created by the generator (such as the user's current WPF app):
 
 | Script | What it does |
 |---|---|
-| `new-project.bat Product "Company" TargetFolder [--ui wpf\|winui]` | Builds the whole project from the template: latest package versions, fonts, solution, git with the hook, tests, first commit |
+| `new-project.bat Product "Company" TargetFolder [--ui wpf\|winui\|avalonia]` (`new-project.sh` on Linux and macOS) | Builds the whole project from the template: latest package versions, fonts, solution, git with the hook, tests, first commit |
 | `add-icons.bat ProjectRoot name ...` | Adds Fluent outline icons by snake_case name (`person_add`) and regenerates `Icons.g.cs` |
 | `check-skill.bat` | Checks the skill repository itself: line-count budgets and text formatting; run by CI on every push |
 

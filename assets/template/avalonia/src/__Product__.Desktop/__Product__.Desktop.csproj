@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>__Product__</AssemblyName>
+    <RootNamespace>__Product__.Desktop</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <!-- Must stay false: Arabic culture data is required -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <!-- AVLN3001: windows take services in their constructors and are built by DI, never by the
+         runtime XAML loader, so a parameterless constructor would only invite misuse. -->
+    <NoWarn>$(NoWarn);AVLN3001</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Serilog.Extensions.Hosting" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" Exclude="Assets\Fonts\OFL.txt;Assets\**\.gitkeep" />
+    <None Include="Assets\Fonts\OFL.txt" CopyToOutputDirectory="PreserveNewest" Condition="Exists('Assets\Fonts\OFL.txt')" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="__Product__.Desktop.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\__Product__.Core\__Product__.Core.csproj" />
+    <ProjectReference Include="..\__Product__.Data\__Product__.Data.csproj" />
+    <ProjectReference Include="..\__Product__.Presentation\__Product__.Presentation.csproj" />
+  </ItemGroup>
+</Project>

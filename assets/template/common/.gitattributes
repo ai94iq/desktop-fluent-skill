@@ -4,6 +4,11 @@
 *.slnx  text eol=crlf
 *.cs    text diff=csharp
 *.xaml  text
+*.axaml text
+*.sh    text eol=lf
+*.plist text eol=lf
+*.spec  text eol=lf
+*.desktop text eol=lf
 *.resx  text
 *.sql   text
 *.md    text

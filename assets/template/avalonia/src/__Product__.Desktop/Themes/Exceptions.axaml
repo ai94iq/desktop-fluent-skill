@@ -1,0 +1,10 @@
+<!-- The only literal colors in the app. Views use Fluent keys through DynamicResource; an entry
+     belongs here only when Fluent has no key for the job, once per theme variant, with a comment
+     naming the gap it fills. TokenRuleTests fails on a literal color anywhere else. -->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary x:Key="Light" />
+    <ResourceDictionary x:Key="Dark" />
+  </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

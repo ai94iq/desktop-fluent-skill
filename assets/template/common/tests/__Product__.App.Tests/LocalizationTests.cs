@@ -26,7 +26,7 @@ public sealed class LocalizationTests
 
     private static IEnumerable<string> UsedKeys()
     {
-        foreach (var file in TestPaths.SourceFiles(".xaml", ".cs"))
+        foreach (var file in TestPaths.SourceFiles(".xaml", ".axaml", ".cs"))
             foreach (Match match in KeyUsage.Matches(File.ReadAllText(file)))
             {
                 var key = match.Groups["k"].Value;

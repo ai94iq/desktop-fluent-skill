@@ -76,7 +76,7 @@ static void PrintCommands(string repo, bool noTerminal)
     Console.WriteLine();
     if (OperatingSystem.IsWindows())
     {
-        Item("New project", @"scripts\new-project.bat MyApp ""My Company"" C:\Projects\MyApp [--ui wpf|winui] [--no-build]");
+        Item("New project", @"scripts\new-project.bat MyApp ""My Company"" C:\Projects\MyApp [--ui wpf|winui|avalonia] [--no-build]");
         Item("Add icons", @"scripts\add-icons.bat C:\Projects\MyApp person_add filter");
         Item("Project tools", "run build.bat, test.bat, run.bat, package.bat, logs.bat or clean.bat in the project folder");
         Item("Guides", @"references\*.md");
@@ -84,9 +84,9 @@ static void PrintCommands(string repo, bool noTerminal)
     }
     else
     {
-        Item("New project", @"dotnet run scripts/new-project.cs -- assets/template MyApp ""My Company"" ~/Projects/MyApp [--ui wpf|winui] [--no-build]");
+        Item("New project", @"scripts/new-project.sh MyApp ""My Company"" ~/Projects/MyApp [--ui avalonia|wpf|winui] [--no-build]");
         Item("Add icons", "dotnet run scripts/add-icons.cs -- ~/Projects/MyApp person_add filter");
-        Item("Project tools", "the generated project's .bat scripts need Windows");
+        Item("Project tools", "an Avalonia project's .sh scripts (./test.sh); WPF and WinUI projects need Windows");
         Item("Guides", "references/*.md");
         Item("Check skill", "dotnet run scripts/check-skill.cs -- .");
     }
@@ -589,12 +589,14 @@ sealed class App
         var uiChoice = Ui.Menu(Title, Subtitle + " Choose the UI technology.",
             [
                 new MenuItem("WPF + WPF-UI", "The default, works on Windows 10 and 11"),
-                new MenuItem("WinUI 3", "Windows App SDK 1.x, unpackaged"),
+                new MenuItem("WinUI 3", "Windows App SDK 2.x, unpackaged"),
+                new MenuItem("Avalonia", "Windows, Linux and macOS"),
             ],
             "↑/↓ choose · Enter select · Esc cancel",
-            _settings.LastUi == "winui" ? 1 : 0);
+            _settings.LastUi switch { "winui" => 1, "avalonia" => 2, _ => 0 });
         if (uiChoice < 0) return;
-        var ui = uiChoice == 1 ? "winui" : "wpf";
+        string[] uis = ["wpf", "winui", "avalonia"];
+        var ui = uis[uiChoice];
         var fullTarget = Path.GetFullPath(target);
 
         var details = new List<Line>
@@ -602,12 +604,12 @@ sealed class App
             new Line().Add("  App       ", Style.Muted).Add(product, Style.Normal),
             new Line().Add("  Company   ", Style.Muted).Add(company, Style.Normal),
             new Line().Add("  Folder    ", Style.Muted).Add(fullTarget, Style.Normal),
-            new Line().Add("  UI        ", Style.Muted).Add(ui == "wpf" ? "WPF + WPF-UI 4.x" : "WinUI 3", Style.Normal),
+            new Line().Add("  UI        ", Style.Muted).Add(ui switch { "wpf" => "WPF + WPF-UI 4.x", "winui" => "WinUI 3", _ => "Avalonia" }, Style.Normal),
             Line.Blank,
         };
 
         bool build;
-        if (OperatingSystem.IsWindows())
+        if (OperatingSystem.IsWindows() || ui == "avalonia")
         {
             var finish = Ui.Menu(Title + " — confirm", null,
                 [
@@ -761,7 +763,7 @@ sealed class App
             (Path.Combine("references", "code-patterns.md"), "Code patterns", "Startup, data, caching, testing, threading"),
             (Path.Combine("references", "localization.md"), "Localization and RTL", "Strings, dates, numbers, Arabic"),
             (Path.Combine("references", "ui-ux.md"), "UI and UX", "Screens, forms, inputs, styling, icons"),
-            (Path.Combine("references", "ui-frameworks.md"), "WPF vs WinUI 3", "Which stack, WinUI-specific rules"),
+            (Path.Combine("references", "ui-frameworks.md"), "WPF, WinUI 3 or Avalonia", "Which stack, framework-specific rules"),
             (Path.Combine("references", "app-features.md"), "Optional features", "Update check, welcome, encrypted storage"),
             (Path.Combine("references", "installer.md"), "Installer and releases", "WiX v7 MSI"),
             ("SKILL.md", "Skill overview", "Rules, locked stack and review checklist"),

@@ -39,7 +39,8 @@ create a Windows desktop app. To scaffold directly:
 scripts\new-project.bat MyApp "My Company" C:\Projects\MyApp --ui wpf
 ```
 
-Use `--ui winui` for the WinUI 3 variant. The first run takes a few minutes
+Use `--ui winui` for the WinUI 3 variant, or `--ui avalonia` for an app that also
+runs on Linux and macOS (`scripts/new-project.sh` scaffolds from those systems). The first run takes a few minutes
 (package restore, fonts and tests).
 
 ## Use without an agent
@@ -66,9 +67,9 @@ plain commands instead of failing.
 | Path | Contents |
 |---|---|
 | `SKILL.md` | Identity, agent rules, locked stack, review checklist |
-| `references/` | Project setup, code patterns, localization/RTL, UI/UX, UI frameworks, optional features, installer |
-| `scripts/` | `new-project.bat` (full scaffold), `add-icons.bat` (icons), `check-skill.bat` (size and formatting checks), `tui.bat` / `tui.sh` (keyboard menu) |
-| `assets/template/` | Template files: `common/` plus the `wpf/` or `winui/` layer |
+| `references/` | Project setup, code patterns, localization/RTL, UI/UX, UI frameworks, cross-platform, optional features, installer |
+| `scripts/` | `new-project.bat` / `new-project.sh` (full scaffold), `add-icons.bat` (icons), `check-skill.bat` (size, formatting, ASCII, contents and link checks), `tui.bat` / `tui.sh` (keyboard menu) |
+| `assets/template/` | Template files: `common/` plus the `wpf/`, `winui/` or `avalonia/` layer |
 
 ## Status
 

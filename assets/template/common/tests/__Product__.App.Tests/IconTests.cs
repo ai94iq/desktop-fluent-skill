@@ -10,7 +10,7 @@ public sealed class IconTests
     [Fact]
     public void Every_icon_used_in_xaml_exists()
     {
-        var unknown = TestPaths.SourceFiles(".xaml")
+        var unknown = TestPaths.SourceFiles(".xaml", ".axaml")
             .SelectMany(f => KindUsage.Matches(File.ReadAllText(f)).Select(m => m.Groups["k"].Value))
             .Where(k => !Enum.TryParse<IconKind>(k, out _))
             .Distinct();

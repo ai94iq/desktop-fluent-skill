@@ -1,6 +1,6 @@
 #:property PublishAot=false
 // Scaffolds a new project from the skill template. Run through new-project.bat, not directly.
-// Args: <templateDir> <Product> <Company> <targetDir> [--ui wpf|winui] [--no-build]
+// Args: <templateDir> <Product> <Company> <targetDir> [--ui wpf|winui|avalonia] [--no-build]
 using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Text;
@@ -10,18 +10,23 @@ using System.Globalization;
 const string NuGet = "https://api.nuget.org/v3-flatcontainer";
 const string Fonts = "https://raw.githubusercontent.com/notofonts/notofonts.github.io/main/fonts/NotoSansArabic/hinted/ttf";
 const string FontLicense = "https://raw.githubusercontent.com/notofonts/arabic/main/OFL.txt";
-string[] textExtensions = [".cs", ".xaml", ".csproj", ".props", ".slnx", ".json", ".md", ".bat", ".resx", ".sql",
-    ".wxs", ".wxl", ".wixproj", ".manifest", ".txt", ".rtf", ".editorconfig", ".gitattributes", ".gitignore"];
+string[] textExtensions = [".cs", ".xaml", ".axaml", ".csproj", ".props", ".slnx", ".json", ".md", ".bat", ".resx", ".sql",
+    ".wxs", ".wxl", ".wixproj", ".manifest", ".txt", ".rtf", ".editorconfig", ".gitattributes", ".gitignore",
+    ".sh", ".plist", ".spec", ".desktop"];
+// Read by Linux and macOS tools, so they keep LF; everything else gets CRLF.
+string[] lfExtensions = [".sh", ".plist", ".spec", ".desktop"];
 
 try
 {
-    if (args.Length < 4) return Fail("Usage: new-project.bat <Product> <Company> <TargetFolder> [--ui wpf|winui] [--no-build]");
+    if (args.Length < 4) return Fail("Usage: new-project.bat <Product> <Company> <TargetFolder> [--ui wpf|winui|avalonia] [--no-build]");
     var templateRoot = Path.GetFullPath(args[0]);
     var (product, company, targetDir) = (args[1], args[2], Path.GetFullPath(args[3]));
     var build = !args.Contains("--no-build");
     var uiIndex = Array.IndexOf(args, "--ui");
     var ui = uiIndex > 0 && uiIndex + 1 < args.Length ? args[uiIndex + 1].ToLowerInvariant() : "wpf";
-    if (ui is not ("wpf" or "winui")) return Fail("--ui must be wpf or winui.");
+    if (ui is not ("wpf" or "winui" or "avalonia")) return Fail("--ui must be wpf, winui or avalonia.");
+    // Avalonia splits the common App project: portable code goes to Presentation, UI assets to Desktop.
+    var avalonia = ui == "avalonia";
     string[] layers = [Path.Combine(templateRoot, "common"), Path.Combine(templateRoot, ui)];
 
     if (!Regex.IsMatch(product, "^[A-Z][A-Za-z0-9]{1,40}$"))
@@ -44,21 +49,32 @@ try
     tokens["__Date__"] = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
     tokens["__Year__"] = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture);
     tokens["__SdkVersion__"] = sdk;
-    tokens["__UiStack__"] = ui == "wpf" ? "WPF + WPF-UI 4.x" : "WinUI 3 (Windows App SDK 2.x, unpackaged)";
+    tokens["__product__"] = product.ToLowerInvariant();     // Linux package and command names
+    tokens["__UiStack__"] = ui switch
+    {
+        "wpf" => "WPF + WPF-UI 4.x",
+        "winui" => "WinUI 3 (Windows App SDK 2.x, unpackaged)",
+        _ => "Avalonia 12 (Fluent theme) for Windows, Linux and macOS",
+    };
+    string[] projects = avalonia
+        ? [$"src/{product}.Core", $"src/{product}.Data", $"src/{product}.Presentation", $"src/{product}.Desktop",
+           $"tests/{product}.Core.Tests", $"tests/{product}.Data.Tests", $"tests/{product}.Presentation.Tests",
+           $"tests/{product}.Desktop.Tests"]
+        : [$"src/{product}.App", $"src/{product}.Core", $"src/{product}.Data",
+           $"tests/{product}.Core.Tests", $"tests/{product}.Data.Tests", $"tests/{product}.App.Tests"];
+    var uiProject = avalonia ? $"{product}.Desktop" : $"{product}.App";
 
     Step(2, $"Copying template ({ui})");
-    foreach (var layer in layers) CopyTemplate(layer, targetDir, tokens);
+    foreach (var layer in layers) CopyTemplate(layer, targetDir, tokens, avalonia);
 
     Step(3, "Downloading Noto Sans Arabic (OFL)");
-    var fontsOk = await DownloadFonts(http, Path.Combine(targetDir, "src", $"{product}.App", "Assets", "Fonts"));
+    var fontsOk = await DownloadFonts(http, Path.Combine(targetDir, "src", uiProject, "Assets", "Fonts"));
 
     Step(4, "Creating solution and git repository");
     Run(targetDir, capture: false, "git", "init", "-q", "-b", "main");
     Run(targetDir, capture: false, "git", "config", "core.hooksPath", ".githooks");   // pre-commit runs all tests
     Run(targetDir, capture: false, "dotnet", "new", "sln", "-n", product, "--format", "slnx");
-    Run(targetDir, capture: false, "dotnet", "sln", $"{product}.slnx", "add",
-        $"src/{product}.App", $"src/{product}.Core", $"src/{product}.Data",
-        $"tests/{product}.Core.Tests", $"tests/{product}.Data.Tests", $"tests/{product}.App.Tests");
+    Run(targetDir, capture: false, "dotnet", ["sln", $"{product}.slnx", "add", .. projects]);
 
     if (build)
     {
@@ -75,16 +91,19 @@ try
     if (committed)
     {
         Run(targetDir, capture: false, "git", "add", "-A");
+        var scripts = Directory.GetFiles(targetDir, "*.sh").Select(f => Path.GetFileName(f)).ToArray();
+        if (scripts.Length > 0)                         // Linux and macOS run them as ./build.sh
+            Run(targetDir, capture: false, "git", ["add", "--chmod=+x", .. scripts]);
         // Tests already ran in step 5, so the pre-commit hook is skipped for this one commit only.
         string[] verify = build ? ["--no-verify"] : [];
         Run(targetDir, capture: false, "git", ["commit", "-q", .. verify,
             "-m", "repo: chore: scaffold solution",
-            "-m", $"Create {product}.slnx ({tokens["__UiStack__"]}) with App, Core and Data projects, three test projects and the WiX installer from the skill template. Package versions are the latest stable at scaffold time."]);
+            "-m", $"Create {product}.slnx ({tokens["__UiStack__"]}) with {string.Join(", ", projects.Select(p => Path.GetFileName(p)))} and the WiX installer from the skill template. Package versions are the latest stable at scaffold time."]);
     }
 
     Console.WriteLine();
     Console.WriteLine($"[new-project] OK: {targetDir}");
-    if (!fontsOk) Console.WriteLine($"[new-project] TODO: add NotoSansArabic-Regular/Medium/Bold.ttf and OFL.txt to src\\{product}.App\\Assets\\Fonts");
+    if (!fontsOk) Console.WriteLine($"[new-project] TODO: add NotoSansArabic-Regular/Medium/Bold.ttf and OFL.txt to src/{uiProject}/Assets/Fonts");
     if (!committed) Console.WriteLine("[new-project] TODO: git identity is not set. Ask the user for name and email, set them with 'git config', then commit.");
     if (!build) Console.WriteLine("[new-project] TODO: run test.bat --no-pause");
     return 0;
@@ -183,11 +202,13 @@ static async Task<string> LatestStable(HttpClient http, string id, int? maxMajor
     return best ?? throw new InvalidOperationException($"No stable version of {id} found (max major {maxMajor}).");
 }
 
-void CopyTemplate(string from, string to, Dictionary<string, string> tokens)
+void CopyTemplate(string from, string to, Dictionary<string, string> tokens, bool avalonia)
 {
     foreach (var source in Directory.EnumerateFiles(from, "*", SearchOption.AllDirectories))
     {
-        var relative = Path.GetRelativePath(from, source).Replace("__Product__", tokens["__Product__"]);
+        var templatePath = Path.GetRelativePath(from, source);
+        if (avalonia) templatePath = SplitAppProject(templatePath);
+        var relative = templatePath.Replace("__Product__", tokens["__Product__"]).Replace("__product__", tokens["__product__"]);
         var destination = Path.Combine(to, relative);
         Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
         if (!IsText(source))
@@ -197,12 +218,26 @@ void CopyTemplate(string from, string to, Dictionary<string, string> tokens)
         }
 
         var text = File.ReadAllText(source);
+        if (avalonia) text = SplitAppProject(text);
         foreach (var (key, value) in tokens) text = text.Replace(key, value, StringComparison.Ordinal);
         if (text.Contains("__", StringComparison.Ordinal) && Regex.IsMatch(text, @"__[A-Z][A-Za-z]*(:[^_]+)?__"))
             throw new InvalidOperationException($"Unreplaced token in {relative}.");
-        File.WriteAllText(destination, text.ReplaceLineEndings("\r\n"), new UTF8Encoding(false));
+        var lf = lfExtensions.Contains(Path.GetExtension(source), StringComparer.OrdinalIgnoreCase);
+        File.WriteAllText(destination, text.ReplaceLineEndings(lf ? "\n" : "\r\n"), new UTF8Encoding(false));
+        if (lf && !OperatingSystem.IsWindows() && destination.EndsWith(".sh", StringComparison.Ordinal))
+            File.SetUnixFileMode(destination, File.GetUnixFileMode(destination) | UnixFileMode.UserExecute);
     }
 }
+
+// Paths and text that name the common App project: its UI assets belong to Desktop, the rest
+// (view models, services, settings, resx) to Presentation. The avalonia layer then overrides the
+// few files that name UI types. Template paths use the OS separator, template text uses both.
+static string SplitAppProject(string text) => text
+    .Replace(@"__Product__.App\Assets", @"__Product__.Desktop\Assets", StringComparison.Ordinal)
+    .Replace("__Product__.App/Assets", "__Product__.Desktop/Assets", StringComparison.Ordinal)
+    .Replace(@"__Product__.App\app.manifest", @"__Product__.Desktop\app.manifest", StringComparison.Ordinal)
+    .Replace("__Product__.App/app.manifest", "__Product__.Desktop/app.manifest", StringComparison.Ordinal)
+    .Replace("__Product__.App", "__Product__.Presentation", StringComparison.Ordinal);
 
 static async Task<bool> DownloadFonts(HttpClient http, string fontsDir)
 {

@@ -18,7 +18,7 @@ Read this when the product must run on Linux or macOS as well as Windows. The UI
 
 ## 1. Decision and scope
 
-- Choose Avalonia at scaffold time when Linux or macOS is a requirement, and record it in the ADR. Don't port a WPF or WinUI app "in case": a port rewrites every view.
+- Choose Avalonia at scaffold time when Linux or macOS is a requirement: `new-project.bat ... --ui avalonia` (or `new-project.sh` on Linux and macOS). The generated ADR records it. Don't port a WPF or WinUI app "in case": a port rewrites every view.
 - Supported targets: Windows 10/11 x64, Linux x64 (X11, and Wayland through XWayland), macOS 15 or later on Apple Silicon and Intel. macOS 15 is the oldest release on the .NET 10 supported-OS list; check that list before lowering or raising the floor.
 - MAUI and Uno stay out. Flatpak and Snap stay out too: their sandboxes block clipboard watching, global hotkeys and sending keys to other apps.
 

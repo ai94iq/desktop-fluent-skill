@@ -3,7 +3,7 @@ setlocal EnableExtensions
 rem Scaffolds a complete project from the skill template in one command.
 rem Example: new-project.bat MyApp "My Company" C:\Projects\MyApp
 if "%~3"=="" (
-  echo Usage: new-project.bat ProductName "Company Name" TargetFolder [--ui wpf^|winui] [--no-build]
+  echo Usage: new-project.bat ProductName "Company Name" TargetFolder [--ui wpf^|winui^|avalonia] [--no-build]
   exit /b 1
 )
 rem Resolve a relative target against the caller's folder, then run from the skill root so the
