@@ -85,7 +85,7 @@ For a project not created by the generator (such as the user's current WPF app):
 | `logs.bat` | Show error (or all) lines from a script's saved log: `logs.bat test error` |
 | `clean.bat` | Delete every `bin`, `obj` and `artifacts` folder |
 
-Repo scripts are ASCII-only with CRLF line endings, and start with `cd /d "%~dp0"`. Every dotnet-running script captures its full output in `artifacts\logs\<script>.log` and prints one line, or the error lines on failure. They return nonzero on failure and pause unless given `--no-pause`.
+Repo scripts are ASCII-only with CRLF line endings, and start with `cd /d "%~dp0"`. A script calls a sibling by full path (`call "%~dp0test.bat"`): with `NoDefaultCurrentDirectoryInExePath` set, cmd never finds a bare `test.bat` in the current folder. Every dotnet-running script captures its full output in `artifacts\logs\<script>.log` and prints one line, or the error lines on failure. They return nonzero on failure and pause unless given `--no-pause`.
 
 ## 6. Git and commits
 

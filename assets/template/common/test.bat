@@ -17,7 +17,7 @@ goto :end
 :fail
 set "RESULT=1"
 echo [test] FAILED - error lines below, full output in artifacts\logs\test.log
-call logs.bat test error --no-pause
+call "%~dp0logs.bat" test error --no-pause
 
 :end
 if /i not "%~1"=="--no-pause" type "artifacts\logs\test.log"

@@ -18,7 +18,7 @@ goto :end
 :fail
 set "RESULT=1"
 echo [build] FAILED - error lines below, full output in artifacts\logs\build.log
-call logs.bat build error --no-pause
+call "%~dp0logs.bat" build error --no-pause
 
 :end
 if /i not "%~1"=="--no-pause" type "artifacts\logs\build.log"
