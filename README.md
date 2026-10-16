@@ -1,14 +1,15 @@
-# win-desktop-fluent
+# desktop-fluent
 
-An agent skill for building modern Windows 10/11 desktop apps in C#: a
-prescriptive technology stack, reference guides, and scripts that scaffold a
-complete, tested project in one command - with first-class Arabic and
-right-to-left support.
+An agent skill for building modern desktop apps in C# for Windows 10/11, and
+with Avalonia for Linux and macOS too: a prescriptive technology stack,
+reference guides, and scripts that scaffold a complete, tested project in one
+command - with first-class Arabic and right-to-left support.
 
 ## What it gives you
 
 - **One-command scaffold** - `new-project.bat` creates a WPF + WPF-UI (default)
-  or WinUI 3 app with Core/Data/App projects, three xUnit v3 test projects,
+  or WinUI 3 app with Core/Data/App projects, or an Avalonia app with
+  Core/Data/Presentation/Desktop projects and `.sh` twins, xUnit v3 tests,
   repo scripts, docs and a WiX v7 MSI, then runs the tests and makes the first
   commit.
 - **A locked stack** so agents don't improvise: .NET 10, CommunityToolkit.Mvvm,
@@ -25,14 +26,14 @@ right-to-left support.
 
 ## Requirements
 
-- Windows 10 22H2 or Windows 11, x64
+- Windows 10 22H2 or Windows 11, x64; or, for Avalonia projects only, Linux x64 or macOS 15+
 - .NET 10 SDK
-- Git for Windows
+- Git (Git for Windows on Windows)
 
 ## Use
 
 Copy or clone this repository into your agent's skills directory (for example
-`%USERPROFILE%\.claude\skills\win-desktop-fluent`), then ask your agent to
+`%USERPROFILE%\.claude\skills\desktop-fluent`), then ask your agent to
 create a Windows desktop app. To scaffold directly:
 
 ```bat

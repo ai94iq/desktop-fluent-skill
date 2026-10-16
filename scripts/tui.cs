@@ -65,7 +65,7 @@ static void PrintCommands(string repo, bool noTerminal)
 {
     void Item(string name, string command) => Console.WriteLine($"  {name.PadRight(14)} {command}");
 
-    Console.WriteLine("win-desktop-fluent — keyboard menu");
+    Console.WriteLine("desktop-fluent — keyboard menu");
     Console.WriteLine();
     if (noTerminal)
         Console.WriteLine("No interactive terminal was detected. Run tui.bat or tui.sh from a terminal, or use these commands:");
@@ -154,7 +154,7 @@ static class Ui
 
     public static void Init()
     {
-        try { Console.Title = "win-desktop-fluent"; } catch (Exception) { }
+        try { Console.Title = "desktop-fluent"; } catch (Exception) { }
         try { Console.CursorVisible = false; } catch (Exception) { }
         Console.CancelKeyPress += (_, e) =>
         {
@@ -169,7 +169,7 @@ static class Ui
         try { Console.ResetColor(); } catch (Exception) { }
         try { Console.CursorVisible = true; } catch (Exception) { }
         try { Console.Clear(); } catch (Exception) { }
-        Console.WriteLine("win-desktop-fluent — menu closed.");
+        Console.WriteLine("desktop-fluent — menu closed.");
     }
 
     public static void Apply(Style style)
@@ -485,14 +485,19 @@ sealed class Settings
     public string? LastUi { get; set; }
 
     static string FilePath => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "desktop-fluent", "tui.json");
+
+    // Saved under the skill's old name before the rename; read once, then saved under the new one.
+    static string OldFilePath => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "win-desktop-fluent", "tui.json");
 
     public static Settings Load()
     {
         try
         {
-            if (File.Exists(FilePath))
-                return JsonSerializer.Deserialize<Settings>(File.ReadAllText(FilePath)) ?? new Settings();
+            var path = File.Exists(FilePath) ? FilePath : OldFilePath;
+            if (File.Exists(path))
+                return JsonSerializer.Deserialize<Settings>(File.ReadAllText(path)) ?? new Settings();
         }
         catch (Exception)
         {
@@ -535,10 +540,10 @@ sealed class App
             while (true)
             {
                 var choice = Ui.Menu(
-                    "win-desktop-fluent",
+                    "desktop-fluent",
                     "Do the skill's tasks from a keyboard — no agent needed.",
                     [
-                        new MenuItem("New project", "Scaffold a WPF or WinUI 3 solution from the template"),
+                        new MenuItem("New project", "Scaffold a WPF, WinUI 3 or Avalonia solution from the template"),
                         new MenuItem("Add icons", "Download Fluent outline icons for an existing project"),
                         new MenuItem("Project tools", "Build, test, run, package, inspect logs, clean"),
                         new MenuItem("Read the guides", "The same references an agent reads"),
