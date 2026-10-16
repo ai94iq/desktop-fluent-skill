@@ -55,7 +55,7 @@ Output:
 | Concern | Use | Not allowed |
 |---|---|---|
 | Runtime | .NET 10 (LTS), C# `latest` | .NET Framework, older .NET |
-| UI framework | **WPF + WPF-UI 4.x (default)** or **WinUI 3** (Windows App SDK 2.x, unpackaged), chosen once at scaffold. See `ui-frameworks.md` | Avalonia, WinForms, MAUI, Uno, MahApps, MaterialDesignInXaml, HandyControl, ModernWpf, WPF `ThemeMode` |
+| UI framework | **WPF + WPF-UI 4.x (default)**, **WinUI 3** (Windows App SDK 2.x, unpackaged), or **Avalonia 12** with its Fluent theme when Linux or macOS is needed; chosen once at scaffold. See `ui-frameworks.md` | WinForms, MAUI, Uno, MahApps, MaterialDesignInXaml, HandyControl, ModernWpf, WPF `ThemeMode` |
 | MVVM | CommunityToolkit.Mvvm 8.4+ with `PageViewModel` | Prism, ReactiveUI, Caliburn.Micro, hand-written `INotifyPropertyChanged` |
 | DI and host | `Microsoft.Extensions.Hosting` | Other containers, service locator |
 | Database | SQLite via `Microsoft.Data.Sqlite` + Dapper | EF Core, System.Data.SQLite, sqlite-net, other ORMs |
@@ -67,11 +67,11 @@ Output:
 | Icons | Fluent UI System Icons, 24px Regular (outline), via `add-icons.bat` and `AppIcon` | Icon fonts (Segoe Fluent Icons is Windows 11-only), emoji, PNG icons, other icon packs |
 | Fonts | Noto Sans Arabic with Segoe UI fallback for Arabic UIs; otherwise the system UI font | Any other bundled font |
 | Tests | xUnit v3 with hand-written fakes (NSubstitute only through an ADR); pre-commit hook | MSTest, NUnit, Moq, FluentAssertions, UI automation (FlaUI, WinAppDriver, Appium) |
-| Installer | WiX Toolset v7 MSI (OSMF EULA accepted) | Inno Setup, NSIS, MSIX, ClickOnce, Velopack, Squirrel |
+| Installer | WiX Toolset v7 MSI (OSMF EULA accepted); with Avalonia also a tarball, `.deb`, `.rpm` and an ad-hoc-signed `.app` in a `.dmg` | Inno Setup, NSIS, MSIX, ClickOnce, Velopack, Squirrel |
 | Packages | Central Package Management | Versions in `.csproj` files |
 | Solution file | `.slnx` | `.sln` |
-| Scripts | `.bat` in the repo root; skill scripts are C# file-based apps | PowerShell, Makefiles, Cake, Nuke |
-| Architecture | Feature folders in App; Core and Data projects | Views/ViewModels type-folders, extra layers, MediatR, CQRS |
+| Scripts | `.bat` in the repo root, plus a `.sh` twin for each with Avalonia; skill scripts are C# file-based apps | PowerShell, Makefiles, Cake, Nuke |
+| Architecture | Feature folders in App; Core and Data projects (Avalonia: Presentation and Desktop instead of App) | Views/ViewModels type-folders, extra layers, MediatR, CQRS |
 
 Reasons for the non-obvious choices:
 - **Dapper:** explicit SQL for recursive queries, full-text search and paging, with no hidden queries.
@@ -97,7 +97,7 @@ Every dotnet-running repo script writes its full output into `artifacts\logs\<sc
 | Writing code (startup, data, caching, conventions, testing, threading, logging) | [code-patterns.md](references/code-patterns.md) |
 | Strings, dates, digits, Arabic, RTL | [localization.md](references/localization.md) |
 | Screens, forms, inputs, styling, icons, themes | [ui-ux.md](references/ui-ux.md) |
-| WPF-UI vs WinUI 3, WinUI-specific rules | [ui-frameworks.md](references/ui-frameworks.md) |
+| WPF-UI vs WinUI 3 vs Avalonia, framework-specific rules | [ui-frameworks.md](references/ui-frameworks.md) |
 | Update check, first-run welcome, encrypted database | [app-features.md](references/app-features.md) |
 | Installer and releases | [installer.md](references/installer.md) |
 | Linux and macOS too: projects, platform interfaces, per-OS limits, .sh twins, packaging, CI | [cross-platform.md](references/cross-platform.md) |
