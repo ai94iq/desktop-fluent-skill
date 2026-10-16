@@ -27,7 +27,7 @@ Relay this in the user's language, in your own words, in three or four short lin
 
 ## 3. Comparison
 
-| Topic | WPF + WPF-UI 4.x | WinUI 3 (Windows App SDK 1.x) |
+| Topic | WPF + WPF-UI 4.x | WinUI 3 (Windows App SDK 2.x) |
 |---|---|---|
 | Maturity | WPF since 2006, very stable; WPF-UI is a community library | Microsoft's current native UI; still evolving |
 | Look | Fluent styling recreated by WPF-UI | Native Fluent controls and motion |
@@ -49,6 +49,7 @@ Relay this in the user's language, in your own words, in three or four short lin
 Everything in Core, Data, the tests, the docs, scripts and installer is identical. The scaffold puts the differences in `assets/template/winui/`.
 
 - **Project:** `net10.0-windows10.0.19041.0`, `UseWinUI`, `WindowsPackageType=None`, `WindowsAppSDKSelfContained=true`, `RuntimeIdentifier=win-x64`. Assets such as fonts are `Content` and are referenced with `ms-appx:///`.
+- **Version:** Windows App SDK 2.x follows semantic versioning, so breaking changes come only with a new major. The template caps it at major 2; a later major is a new ADR, not a bump. Experimental releases stay out.
 - **Partial classes:** every class that derives from or implements a WinUI type (`Window`, `UserControl`, `MarkupExtension`, `IValueConverter`) must be `partial`. This is a platform requirement, not a way around the file-size limits.
 - **Bindings:** use `{x:Bind ViewModel.Prop, Mode=OneWay}`. Give each page a typed `public XViewModel ViewModel { get; }` property set in its constructor. Use `{Binding}` only where `x:Bind` can't reach.
 - **Windows:** `Window` isn't a `FrameworkElement`. Set `DataContext`, `FlowDirection`, `RequestedTheme` and `Language` on the root element (`ApplyCultureDirection` and `ThemeService` already do this).

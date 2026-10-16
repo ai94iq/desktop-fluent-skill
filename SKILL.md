@@ -53,7 +53,7 @@ Output:
 | Concern | Use | Not allowed |
 |---|---|---|
 | Runtime | .NET 10 (LTS), C# `latest` | .NET Framework, older .NET |
-| UI framework | **WPF + WPF-UI 4.x (default)** or **WinUI 3** (Windows App SDK 1.x, unpackaged), chosen once at scaffold. See `ui-frameworks.md` | Avalonia, WinForms, MAUI, Uno, MahApps, MaterialDesignInXaml, HandyControl, ModernWpf, WPF `ThemeMode` |
+| UI framework | **WPF + WPF-UI 4.x (default)** or **WinUI 3** (Windows App SDK 2.x, unpackaged), chosen once at scaffold. See `ui-frameworks.md` | Avalonia, WinForms, MAUI, Uno, MahApps, MaterialDesignInXaml, HandyControl, ModernWpf, WPF `ThemeMode` |
 | MVVM | CommunityToolkit.Mvvm 8.4+ with `PageViewModel` | Prism, ReactiveUI, Caliburn.Micro, hand-written `INotifyPropertyChanged` |
 | DI and host | `Microsoft.Extensions.Hosting` | Other containers, service locator |
 | Database | SQLite via `Microsoft.Data.Sqlite` + Dapper | EF Core, System.Data.SQLite, sqlite-net, other ORMs |

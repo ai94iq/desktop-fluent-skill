@@ -44,7 +44,7 @@ try
     tokens["__Date__"] = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
     tokens["__Year__"] = DateTime.Now.Year.ToString(CultureInfo.InvariantCulture);
     tokens["__SdkVersion__"] = sdk;
-    tokens["__UiStack__"] = ui == "wpf" ? "WPF + WPF-UI 4.x" : "WinUI 3 (Windows App SDK 1.x, unpackaged)";
+    tokens["__UiStack__"] = ui == "wpf" ? "WPF + WPF-UI 4.x" : "WinUI 3 (Windows App SDK 2.x, unpackaged)";
 
     Step(2, $"Copying template ({ui})");
     foreach (var layer in layers) CopyTemplate(layer, targetDir, tokens);
