@@ -85,4 +85,5 @@ winget is how most users install a desktop app. Keep the manifests in `packaging
 - Submission runs `wingetcreate submit` with a classic GitHub token that has the `public_repo` scope, stored as the repository secret `WINGET_TOKEN`. Without the secret, skip the submission and leave the refreshed manifests for a manual run.
 - **Never reference `secrets.*` in a step `if:`** - the workflow becomes invalid and fails at startup with zero jobs. Put the secret in a job-level `env` and test `env.TOKEN != ''` in the step instead.
 - Manual fallback: download the MSI attached to the release, compute its SHA256, read its product code, update the three files, then run `wingetcreate submit --prtitle "New version: Publisher.MyApp version X.Y.Z" --token <token> packaging\winget`.
+- Run the tests on every push. Run the release only on a version tag (`vX.Y.Z`) and only after the tests pass for that commit, and make it fail when the tag differs from `Version` in `Directory.Build.props`.
 - winget's validation runs on the pull request; once it is merged, `winget install Publisher.MyApp` works.
