@@ -763,7 +763,7 @@ sealed class App
             (Path.Combine("references", "ui-ux.md"), "UI and UX", "Screens, forms, inputs, styling, icons"),
             (Path.Combine("references", "ui-frameworks.md"), "WPF vs WinUI 3", "Which stack, WinUI-specific rules"),
             (Path.Combine("references", "app-features.md"), "Optional features", "Update check, welcome, encrypted storage"),
-            (Path.Combine("references", "installer.md"), "Installer and releases", "WiX v6 MSI"),
+            (Path.Combine("references", "installer.md"), "Installer and releases", "WiX v7 MSI"),
             ("SKILL.md", "Skill overview", "Rules, locked stack and review checklist"),
             ("README.md", "Readme", "What this repository is"),
         };

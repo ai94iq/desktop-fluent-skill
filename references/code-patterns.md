@@ -64,7 +64,7 @@ MyApp/
         MyApp.Core/  pure C#: Models, Abstractions, Caching, Text, Theming
         MyApp.Data/  SQLite + Dapper: Migrations/, Repositories/, connection factory, initializer
     tests/           MyApp.Core.Tests, MyApp.Data.Tests, MyApp.App.Tests
-    installer/       WiX v6 project
+    installer/       WiX v7 project
     artifacts/       build output (git-ignored)
 ```
 

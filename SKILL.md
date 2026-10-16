@@ -65,7 +65,7 @@ Output:
 | Icons | Fluent UI System Icons, 24px Regular (outline), via `add-icons.bat` and `AppIcon` | Icon fonts (Segoe Fluent Icons is Windows 11-only), emoji, PNG icons, other icon packs |
 | Fonts | Noto Sans Arabic with Segoe UI fallback for Arabic UIs; otherwise the system UI font | Any other bundled font |
 | Tests | xUnit v3 with hand-written fakes (NSubstitute only through an ADR); pre-commit hook | MSTest, NUnit, Moq, FluentAssertions, UI automation (FlaUI, WinAppDriver, Appium) |
-| Installer | WiX Toolset v6 MSI | Inno Setup, NSIS, MSIX, ClickOnce, Velopack, Squirrel |
+| Installer | WiX Toolset v7 MSI (OSMF EULA accepted) | Inno Setup, NSIS, MSIX, ClickOnce, Velopack, Squirrel |
 | Packages | Central Package Management | Versions in `.csproj` files |
 | Solution file | `.slnx` | `.sln` |
 | Scripts | `.bat` in the repo root; skill scripts are C# file-based apps | PowerShell, Makefiles, Cake, Nuke |

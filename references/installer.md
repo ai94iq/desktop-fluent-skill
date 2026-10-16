@@ -1,4 +1,4 @@
-# Installer: WiX Toolset v6 MSI
+# Installer: WiX Toolset v7 MSI
 
 ## Contents
 1. Fixed decisions
@@ -15,7 +15,7 @@
 
 | Topic | Decision |
 |---|---|
-| Toolset | WiX v6, SDK-style `.wixproj` built with `dotnet build`. Pin the latest 6.x stable for both the SDK and `WixToolset.UI.wixext`, at the same version |
+| Toolset | WiX v7, SDK-style `.wixproj` built with `dotnet build`. Pin the latest 7.x stable for both the SDK and `WixToolset.UI.wixext`, at the same version |
 | Package | One per-machine MSI, x64, installed to `Program Files\MyApp` |
 | Payload | The self-contained `build.bat` output in `artifacts\publish\win-x64`. No prerequisites, no bootstrapper bundle |
 | UI | `WixUI_InstallDir` (welcome, license, folder, install) |
@@ -24,7 +24,7 @@
 | Upgrades | `MajorUpgrade` with a fixed `UpgradeCode` and `AllowSameVersionUpgrades` |
 | User data | Never touched: `%LOCALAPPDATA%\MyApp` survives uninstall |
 
-Licensing: WiX v6 adopted the Open Source Maintenance Fee for organizations that earn revenue from it. Confirm the current terms on wixtoolset.org before a commercial release and tell the user if they apply.
+Licensing: WiX 7 builds only after its Open Source Maintenance Fee EULA is accepted; without `<AcceptEula>wix7</AcceptEula>` in the `.wixproj` the build stops with WIX7015. The template accepts it. Under those terms an organization above the revenue threshold must sponsor the WiX project, so tell the user when a commercial release ships, and check the current terms (docs.firegiant.com/wix/osmf) before any WiX major bump, since the EULA id can change.
 
 ## 2. Files
 
@@ -32,7 +32,7 @@ The generator creates these from the template. Edit them in place; never rewrite
 
 | File | Contains |
 |---|---|
-| `installer/MyApp.Installer.wixproj` | WiX SDK and UI extension pinned to the same 6.x version, `ar-SA` culture, x64, version from `Directory.Build.props` |
+| `installer/MyApp.Installer.wixproj` | WiX SDK and UI extension pinned to the same 7.x version, `AcceptEula` set, `ar-SA` culture, x64, version from `Directory.Build.props` |
 | `installer/Package.wxs` | Per-machine package, the fixed `UpgradeCode` (generated once, never changed), `MajorUpgrade`, all publish files via `<Files>`, an advertised Start Menu shortcut in the exe's component, `WixUI_InstallDir` |
 | `installer/Package.ar-SA.wxl` | Our strings with codepage 1256 (MSI databases aren't Unicode) |
 | `installer/License.rtf` | License text. Edit in WordPad or Word, never by hand |

@@ -9,7 +9,7 @@ right-to-left support.
 
 - **One-command scaffold** - `new-project.bat` creates a WPF + WPF-UI (default)
   or WinUI 3 app with Core/Data/App projects, three xUnit v3 test projects,
-  repo scripts, docs and a WiX v6 MSI, then runs the tests and makes the first
+  repo scripts, docs and a WiX v7 MSI, then runs the tests and makes the first
   commit.
 - **A locked stack** so agents don't improvise: .NET 10, CommunityToolkit.Mvvm,
   Microsoft.Extensions.Hosting, Serilog, SQLite via Microsoft.Data.Sqlite +

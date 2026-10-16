@@ -27,7 +27,7 @@ Pass `--no-pause` to skip the final key press (used by automation).
 | `src/__Product__.Core` | Domain models, interfaces, pure logic (no UI, no SQL) |
 | `src/__Product__.Data` | SQLite + Dapper repositories and migrations |
 | `tests/*` | xUnit v3 tests per project |
-| `installer` | WiX v6 MSI |
+| `installer` | WiX v7 MSI |
 
 Details: [docs/architecture.md](docs/architecture.md).
 
