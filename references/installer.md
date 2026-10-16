@@ -41,7 +41,7 @@ The installer isn't part of the solution. `package.bat` runs it after `build.bat
 
 ## 3. WinUI 3 projects
 
-Nothing changes in the installer. The self-contained, unpackaged publish output already includes the Windows App SDK runtime, so the MSI is larger (about 40-60 MB more) and needs no prerequisites.
+Nothing changes in the installer. The self-contained, unpackaged publish output already includes the Windows App SDK runtime, so the MSI is larger and needs no prerequisites.
 
 ## 4. Arabic installer text
 
@@ -57,7 +57,7 @@ If the build reports missing ar-SA WixUI strings, add them to `Package.ar-SA.wxl
 
 ## 6. Signing
 
-- Sign `MyApp.exe` after `build.bat` and before the MSI build, then sign the MSI. Use `signtool sign /fd SHA256 /tr <timestamp-url> /td SHA256 ...` with the certificate the user provides.
+- Sign `MyApp.exe` after `build.bat` and before the MSI build, then sign the MSI. Use `signtool sign /fd SHA256 /tr <timestamp-url> /td SHA256 <file>` with the certificate the user provides.
 - Certificates and passwords never enter the repo. Add a signing step to `package.bat` only when the user supplies a certificate, and document it in `docs/release.md`.
 - Unsigned builds work but trigger SmartScreen warnings. Say so whenever you hand over an unsigned MSI.
 
@@ -78,7 +78,7 @@ Before each release, on a Windows 10 22H2 VM and on Windows 11, as a standard us
 
 ## 9. Publishing to winget
 
-winget is how most users install a desktop app. Keep the manifests in `packaging/winget/` (schema 1.6) and let CI submit them from the MSI it built:
+winget is how most users install a desktop app. Keep the manifests in `packaging/winget/` (the current manifest schema) and let CI submit them from the MSI it built:
 
 - On a version tag, the release pipeline builds the MSI, publishes the GitHub release, then rewrites `PackageVersion`, `InstallerUrl`, `InstallerSha256`, `ProductCode` and the release-notes URL in the three manifest files.
 - The SHA256 and the product code must come from the CI-built MSI, never from a local `package.bat` output: MSIs are not byte-reproducible, so the hash and product code differ per build.

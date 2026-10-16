@@ -73,7 +73,7 @@ Output:
 
 Reasons for the non-obvious choices:
 - **Dapper:** explicit SQL for recursive queries, full-text search and paging, with no hidden queries.
-- **xUnit v3 + NSubstitute:** FluentAssertions 8 needs a paid license, and Moq shipped telemetry in 2023.
+- **xUnit v3 + NSubstitute:** no dependency with a paid license or telemetry, which rules out FluentAssertions and Moq.
 - **`IMemoryCache`:** HybridCache only adds serialization in a single-process app.
 - **Fluent outline icons:** the same design language as Windows 11, they work on Windows 10, and they're MIT-licensed.
 - **No UI automation:** behavior is tested through ViewModels, which is faster and more reliable.

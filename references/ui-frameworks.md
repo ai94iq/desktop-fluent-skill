@@ -20,10 +20,10 @@ If the user hasn't chosen, ask once, using the summary below, and recommend WPF-
 
 ## 2. Plain-language summary for the user
 
-Relay this in Arabic, in your own words, in three or four short lines:
+Relay this in the user's language, in your own words, in three or four short lines:
 
 - **WPF-UI** (recommended): mature and fast to build with. It looks modern like Windows 11 and works the same on Windows 10. Smaller download. Supports Arabic-Indic digits. Best for apps with many forms, lists and large drawings.
-- **WinUI 3**: Microsoft's newest technology, with the most native Windows 11 look, smoother animations and better touch support. The installer is bigger (about 40-60 MB more), development is slower, there are fewer ready-made add-ons, and some features (Arabic-Indic digits, very large custom drawings) need extra work.
+- **WinUI 3**: Microsoft's newest technology, with the most native Windows 11 look, smoother animations and better touch support. The installer is noticeably bigger, development is slower, there are fewer ready-made add-ons, and some features (Arabic-Indic digits, very large custom drawings) need extra work.
 
 ## 3. Comparison
 
