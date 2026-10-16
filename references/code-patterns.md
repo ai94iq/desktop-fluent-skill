@@ -101,6 +101,7 @@ The template lives in the skill folder: `assets/template/common/` (shared) plus 
 - No speculative abstractions. Interfaces exist only for things a test swaps out: services and repositories used by ViewModels. Helpers stay static or concrete.
 - Inheritance only as `PageViewModel` to page ViewModel (one level). No generic repositories, no reflection, no events where a method call works.
 - Use early returns and keep nesting to 3 levels or fewer.
+- A step that writes a file (backup, export) deletes its partial output when it fails or is cancelled, then rethrows; a half-written file that matches the naming pattern gets listed and restored later.
 - Use built-in controls first. Write a custom control only when it's used in two or more places.
 
 ## 4. Code conventions and file size
@@ -136,7 +137,7 @@ For each feature, before implementing it:
 
 Rules:
 - Tests live in `tests/<Project>.Tests/<Feature>/<Class>Tests.cs`. Name each one as a sentence: `Saving_without_a_name_shows_required_error`. One behavior per test, arranged as Arrange / Act / Assert.
-- Fake interfaces with small hand-written classes in the test project (`FakePersonRepository : IPersonRepository`, `RecordingNotifier : IDataChangeNotifier`) that return canned data and record calls. Add a mocking library only through an ADR, and use NSubstitute if one is approved. No real network, no `Thread.Sleep`, no dependence on test order.
+- Fake interfaces with small hand-written classes in the test project (`FakePersonRepository : IPersonRepository`, `RecordingNotifier : IDataChangeNotifier`) that return canned data and record calls. Add a mocking library only through an ADR, and use NSubstitute if one is approved. No real network, no `Thread.Sleep`, no dependence on test order. Tests touch only temp folders (`TestPaths`, `TempDatabase`), never the real `%LOCALAPPDATA%` data: anything that runs a static initializer in `AppPaths` (a migration, a folder move) acts on the developer's own data.
 - Automatic checks already exist; keep them passing:
   - resx keys match and every key used exists (`LocalizationTests`);
   - every `AppIcon Kind` used exists (`IconTests`);

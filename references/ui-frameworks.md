@@ -58,7 +58,8 @@ Everything in Core, Data, the tests, the docs, scripts and installer is identica
 - **UI thread:** use `DispatcherQueue`. `DataChangeNotifier` is created on the UI thread at startup.
 - **Accent:** `ThemeService.ApplyAccentResources` sets the `SystemAccentColor*` resources at the start of `OnLaunched`, before any window. Never in the `App` constructor: reading `Application.Resources` there throws 0x8000FFFF. Changing the accent requires a restart.
 - **Backdrop:** use `MicaBackdrop` when `MicaController.IsSupported()`; otherwise apply the theme's page background brush.
-- **Navigation:** the built-in `NavigationView` with a `Frame`. Pages are resolved from DI.
+- **Navigation:** the built-in `NavigationView` with a `Frame`. Pages are resolved from DI. The page `Frame` lives inside the `NavigationView`, so to show a page without the menu (a first-run wizard) hide only the pane (`IsPaneVisible`, `IsPaneToggleButtonVisible`); collapsing the whole `NavigationView` leaves a blank window.
+- **Lists inside a scrolling page:** a `ListView` nested in the page's `ScrollViewer` made a full UI Automation tree walk (what a screen reader does) hang for 60 s. For a short list there, use an `ItemsControl` in its own `ScrollViewer` with a `MaxHeight`; keep `ListView` for long lists that sit in a `Grid` row and need virtualization.
 - **Triggers:** WinUI has no DataTriggers. Use converters (`LoadStateVisible`) or VisualStateManager.
 
 ## 5. Control equivalents

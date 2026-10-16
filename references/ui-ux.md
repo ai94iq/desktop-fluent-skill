@@ -145,6 +145,8 @@ Use the Fluent type ramp only:
 
 The ViewModel builds `AccentOptions` from `AccentPresets.All`, using `Tr.Get($"Accent_{preset.Key}")` for labels and a "Windows accent" option with `Hex = null`. `Swatch` is a hex string; WPF converts it to a brush in binding.
 
+- **Status colors** (ready, warning, failed, destructive buttons) use the theme's semantic brushes (success, caution, critical, secondary text), never hex values, so light, dark and high contrast all stay readable. A colored dot plus a word reads better than a tinted pill, which looks like a button.
+
 ## 7. Forms and validation
 
 **Field pattern (WPF): `FormField`** is a shared control in `Common/` with a label above, the input, and an error below. Add it when the first form is built.
@@ -346,6 +348,7 @@ public static class PasswordHasher   // Core/Security
 
 - `ListView` with virtualization (WPF: `VirtualizingPanel.VirtualizationMode="Recycling"`). Each item shows an icon or avatar, a primary line and a secondary line in Caption style, with comfortable padding (12 vertical, 16 horizontal).
 - Selection, hover and focus visuals come from the theme. Don't restyle them.
+- Names that can be long (files, folders, user input) get `TextTrimming="CharacterEllipsis"`, so they never run into the row's buttons.
 - Use a `DataGrid` (WPF only) only for spreadsheet-style editing. WinUI has no built-in grid, so use a `ListView` with column-aligned item templates.
 - Numbers and dates in columns align to the end. Column order mirrors in RTL automatically.
 - Paging and search follow `code-patterns.md` (keyset, debounce).
