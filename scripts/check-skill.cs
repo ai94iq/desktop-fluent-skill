@@ -1,5 +1,5 @@
 #:property PublishAot=false
-// Checks this skill repository: token-budget line counts and text formatting.
+// Checks this skill repository: token-budget line counts, text formatting and markdown rules.
 // Run through check-skill.bat. Args: <repoRoot>
 try
 {
@@ -17,7 +17,9 @@ try
         var text = File.ReadAllText(file);
         CheckFormatting(relative, text, problems);
         CheckLineLimit(relative, text, problems);
+        if (relative.EndsWith(".md", StringComparison.OrdinalIgnoreCase)) CheckMarkdown(root, relative, text, problems);
     }
+    CheckReferencesLinked(root, problems);
 
     if (problems.Count > 0)
     {
@@ -58,7 +60,8 @@ static void CheckLineLimit(string relative, string text, List<string> problems)
         else if (name.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase)) limit = (300, "view hard max");
         else if (name.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
             limit = name.EndsWith("ViewModel.cs", StringComparison.OrdinalIgnoreCase) ? (350, "ViewModel hard max") : (400, "class hard max");
-        else if (name.EndsWith(".bat", StringComparison.OrdinalIgnoreCase)) limit = (60, "script hard max");
+        else if (name.EndsWith(".bat", StringComparison.OrdinalIgnoreCase)
+                 || name.EndsWith(".sh", StringComparison.OrdinalIgnoreCase)) limit = (60, "script hard max");
     }
 
     if (limit is { } check)
@@ -79,7 +82,8 @@ static void CheckFormatting(string relative, string text, List<string> problems)
     var loneLf = text.Count(c => c == '\n') - crlf;
     if (crlf > 0 && loneLf > 0) problems.Add($"{relative}: mixed line endings");
     if (text.Count(c => c == '\r') > crlf) problems.Add($"{relative}: stray carriage return");
-    if (path.StartsWith(".githooks/") && crlf > 0) problems.Add($"{relative}: git hooks must use LF endings");
+    if ((path.Contains(".githooks/") || path.EndsWith(".sh", StringComparison.OrdinalIgnoreCase)) && crlf > 0)
+        problems.Add($"{relative}: hooks and .sh scripts must use LF endings");
 
     var lines = text.Split('\n');
     for (var i = 0; i < lines.Length; i++)
@@ -103,6 +107,49 @@ static void CheckFormatting(string relative, string text, List<string> problems)
                 break;
             }
         }
+    }
+}
+
+// Plain ASCII prose; a line holding Arabic letters is real sample data and keeps its punctuation.
+// Docs over 100 lines open with a "## Contents" list; relative .md links must resolve.
+static void CheckMarkdown(string root, string relative, string text, List<string> problems)
+{
+    var lines = text.Split('\n');
+    for (var i = 0; i < lines.Length; i++)
+    {
+        var line = lines[i];
+        if (line.Any(c => c is >= '؀' and <= 'ۿ')) continue;
+        var bad = line.FirstOrDefault(c => c > '\u007F');
+        if (bad != default)
+        {
+            problems.Add($"{relative}:{i + 1}: non-ASCII character U+{(int)bad:X4}");
+            break;
+        }
+    }
+
+    if (CountLines(text) > 100 && !lines.Take(15).Any(l => l.TrimEnd('\r') == "## Contents"))
+        problems.Add($"{relative}: over 100 lines without a '## Contents' heading in the first 15 lines");
+
+    var folder = Path.GetDirectoryName(Path.Combine(root, relative))!;
+    foreach (System.Text.RegularExpressions.Match link in
+             System.Text.RegularExpressions.Regex.Matches(text, @"\]\(([^)#:\s]+\.md)(#[^)]*)?\)"))
+    {
+        if (!File.Exists(Path.Combine(folder, link.Groups[1].Value)))
+            problems.Add($"{relative}: broken link {link.Groups[1].Value}");
+    }
+}
+
+// Every reference must be linked straight from SKILL.md (one level deep).
+static void CheckReferencesLinked(string root, List<string> problems)
+{
+    var references = Path.Combine(root, "references");
+    if (!Directory.Exists(references)) return;
+    var skill = File.ReadAllText(Path.Combine(root, "SKILL.md"));
+    foreach (var file in Directory.EnumerateFiles(references, "*.md"))
+    {
+        var name = Path.GetFileName(file);
+        if (!skill.Contains($"](references/{name})", StringComparison.Ordinal))
+            problems.Add($"SKILL.md: no link to references/{name}");
     }
 }
 
@@ -148,7 +195,7 @@ static bool IsText(string path)
     if (Path.GetFileName(path) == "pre-commit") return true;
     string[] extensions = [".cs", ".xaml", ".csproj", ".props", ".slnx", ".json", ".md", ".bat", ".resx", ".sql",
         ".wxs", ".wxl", ".wixproj", ".manifest", ".txt", ".rtf", ".editorconfig", ".gitattributes", ".gitignore",
-        ".yml", ".yaml"];
+        ".yml", ".yaml", ".sh"];
     var name = Path.GetFileName(path);
     var extension = name.StartsWith('.') ? name : Path.GetExtension(name);
     return extensions.Contains(extension, StringComparer.OrdinalIgnoreCase);
