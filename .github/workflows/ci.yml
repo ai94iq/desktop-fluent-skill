@@ -4,14 +4,18 @@ on:
   push:
   workflow_dispatch:
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
-    name: formatting and size budget
+    name: skill checks
     runs-on: windows-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.x'
       - name: Check skill files
@@ -20,19 +24,50 @@ jobs:
         run: scripts\tui.bat
 
   scaffold:
-    name: scaffold and test (${{ matrix.ui }})
+    name: scaffold and test (${{ matrix.ui }}, windows)
     runs-on: windows-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        ui: [wpf, winui]
+        ui: [wpf, winui, avalonia]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.x'
       - name: Scaffold and test
         run: scripts\new-project.bat CiApp "CI" "${{ runner.temp }}\Ci-${{ matrix.ui }}" --ui ${{ matrix.ui }}
       - name: Check formatting
         run: dotnet format whitespace "${{ runner.temp }}\Ci-${{ matrix.ui }}\CiApp.slnx" --verify-no-changes --no-restore
+
+  # The avalonia scaffold on the systems it targets: scaffold and test, then the packaging script.
+  # Job logs need a signed-in reader, so a failure is echoed as an annotation too.
+  scaffold-posix:
+    name: scaffold, test and package (avalonia, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            package: ./package.sh
+          - os: macos-latest
+            package: ./package-macos.sh
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.x'
+      - name: Scaffold and test
+        run: scripts/new-project.sh CiApp "CI" "$RUNNER_TEMP/Ci" --ui avalonia
+      - name: Package
+        working-directory: ${{ runner.temp }}/Ci
+        run: ${{ matrix.package }}
+      - name: Report the failure
+        if: failure()
+        working-directory: ${{ runner.temp }}/Ci
+        run: |
+          details=$(tail -n 40 artifacts/logs/*.log 2>/dev/null | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+          echo "::error title=Avalonia on ${{ matrix.os }}::${details:-no log written}"

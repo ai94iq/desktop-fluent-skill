@@ -73,5 +73,6 @@ plain commands instead of failing.
 
 ## Status
 
-CI runs on every push: the skill checks (line budgets, formatting), then
-scaffolds and tests both UI variants.
+CI runs on every push: the skill checks (line budgets, formatting, ASCII,
+contents and links), then scaffolds and tests all three UI variants on
+Windows, and the Avalonia variant on Linux and macOS, where it also packages.
