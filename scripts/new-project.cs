@@ -91,9 +91,9 @@ try
     if (committed)
     {
         Run(targetDir, capture: false, "git", "add", "-A");
-        var scripts = Directory.GetFiles(targetDir, "*.sh").Select(f => Path.GetFileName(f)).ToArray();
-        if (scripts.Length > 0)                         // Linux and macOS run them as ./build.sh
-            Run(targetDir, capture: false, "git", ["add", "--chmod=+x", .. scripts]);
+        // Linux and macOS run these directly (./build.sh, the hook), so commit them executable.
+        string[] executables = [.. Directory.GetFiles(targetDir, "*.sh").Select(f => Path.GetFileName(f)), ".githooks/pre-commit"];
+        Run(targetDir, capture: false, "git", ["add", "--chmod=+x", .. executables]);
         // Tests already ran in step 5, so the pre-commit hook is skipped for this one commit only.
         string[] verify = build ? ["--no-verify"] : [];
         Run(targetDir, capture: false, "git", ["commit", "-q", .. verify,
@@ -222,9 +222,10 @@ void CopyTemplate(string from, string to, Dictionary<string, string> tokens, boo
         foreach (var (key, value) in tokens) text = text.Replace(key, value, StringComparison.Ordinal);
         if (text.Contains("__", StringComparison.Ordinal) && Regex.IsMatch(text, @"__[A-Z][A-Za-z]*(:[^_]+)?__"))
             throw new InvalidOperationException($"Unreplaced token in {relative}.");
-        var lf = lfExtensions.Contains(Path.GetExtension(source), StringComparer.OrdinalIgnoreCase);
+        var hook = Path.GetFileName(source) == "pre-commit";
+        var lf = hook || lfExtensions.Contains(Path.GetExtension(source), StringComparer.OrdinalIgnoreCase);
         File.WriteAllText(destination, text.ReplaceLineEndings(lf ? "\n" : "\r\n"), new UTF8Encoding(false));
-        if (lf && !OperatingSystem.IsWindows() && destination.EndsWith(".sh", StringComparison.Ordinal))
+        if ((hook || destination.EndsWith(".sh", StringComparison.Ordinal)) && !OperatingSystem.IsWindows())
             File.SetUnixFileMode(destination, File.GetUnixFileMode(destination) | UnixFileMode.UserExecute);
     }
 }
@@ -261,6 +262,7 @@ static async Task<bool> DownloadFonts(HttpClient http, string fontsDir)
 bool IsText(string path)
 {
     var name = Path.GetFileName(path);
+    if (name == "pre-commit") return true;               // the git hook has no extension
     var extension = name.StartsWith('.') ? name : Path.GetExtension(name);
     return textExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase);
 }
