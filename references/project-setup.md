@@ -109,7 +109,7 @@ Repo scripts are ASCII-only with CRLF line endings, and start with `cd /d "%~dp0
 
 Dependency upgrades:
 - Check the latest stable version live (`https://api.nuget.org/v3-flatcontainer/<id-lowercase>/index.json`, the last version without a `-`) before writing it; never from memory.
-- One commit per package or SDK bump, never squashed. Order coupled bumps so every commit builds: a package that others depend on goes first (bumping `Microsoft.Extensions.Caching.Memory` before `Microsoft.Extensions.Logging.Abstractions` fails with NU1605).
+- One commit per package or SDK bump, never squashed. Order coupled bumps so every commit builds: a package that others depend on goes first (`Microsoft.Extensions.Logging.Abstractions` before `Microsoft.Extensions.Caching.Memory`; the other order fails with NU1605).
 - A new major version (`@N` cap, `global.json` feature band) gets an ADR that says why and what changed.
 - Do a batch of upgrades on a branch; before merging, run the tests, build the installer and start the built app once.
 
