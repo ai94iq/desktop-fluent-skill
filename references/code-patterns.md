@@ -136,7 +136,7 @@ For each feature, before implementing it:
 
 Rules:
 - Tests live in `tests/<Project>.Tests/<Feature>/<Class>Tests.cs`. Name each one as a sentence: `Saving_without_a_name_shows_required_error`. One behavior per test, arranged as Arrange / Act / Assert.
-- Use NSubstitute for interfaces (`IDialogService`, repositories in ViewModel tests). No real network, no `Thread.Sleep`, no dependence on test order.
+- Fake interfaces with small hand-written classes in the test project (`FakePersonRepository : IPersonRepository`, `RecordingNotifier : IDataChangeNotifier`) that return canned data and record calls. Add a mocking library only through an ADR, and use NSubstitute if one is approved. No real network, no `Thread.Sleep`, no dependence on test order.
 - Automatic checks already exist; keep them passing:
   - resx keys match and every key used exists (`LocalizationTests`);
   - every `AppIcon Kind` used exists (`IconTests`);
@@ -352,7 +352,7 @@ Keys are `"{area}:{id}"`, plus `":{culture}"` for localized values. Cache immuta
 
 ## 14. Tests: ViewModel, repository, Core
 
-ViewModel (substitute the interfaces, assert observable behavior):
+ViewModel (fake the interfaces, assert observable behavior):
 
 ```csharp
 public sealed class PeopleViewModelTests
@@ -360,8 +360,7 @@ public sealed class PeopleViewModelTests
     [Fact]
     public async Task No_people_gives_empty_state()
     {
-        var repo = Substitute.For<IPersonRepository>();
-        repo.GetPageAsync(null, 50, Arg.Any<CancellationToken>()).Returns([]);
+        var repo = new FakePersonRepository();   // returns no rows
         var vm = new PeopleViewModel(repo, NullLogger<PeopleViewModel>.Instance);
 
         await vm.EnsureLoadedAsync();
@@ -380,7 +379,7 @@ public sealed class PersonRepositoryTests
     public async Task Search_finds_names_regardless_of_tashkeel()
     {
         using var db = new TempDatabase();
-        var repo = new PersonRepository(db.Factory, new MemoryCache(new MemoryCacheOptions()), Substitute.For<IDataChangeNotifier>());
+        var repo = new PersonRepository(db.Factory, new MemoryCache(new MemoryCacheOptions()), new RecordingNotifier());
         await repo.AddAsync(new NewPerson("مُحَمَّد"), TestContext.Current.CancellationToken);
 
         var results = await repo.SearchAsync("محمد", 10, TestContext.Current.CancellationToken);

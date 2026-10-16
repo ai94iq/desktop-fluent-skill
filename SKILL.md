@@ -64,7 +64,7 @@ Output:
 | Localization | `.resx` + `Tr`; a neutral language plus satellite assemblies (template ships Arabic neutral, English satellite) | Hard-coded UI text, generated `Designer.cs`, `.resw`/`x:Uid`, JSON localization |
 | Icons | Fluent UI System Icons, 24px Regular (outline), via `add-icons.bat` and `AppIcon` | Icon fonts (Segoe Fluent Icons is Windows 11-only), emoji, PNG icons, other icon packs |
 | Fonts | Noto Sans Arabic with Segoe UI fallback for Arabic UIs; otherwise the system UI font | Any other bundled font |
-| Tests | xUnit v3 + NSubstitute; pre-commit hook | MSTest, NUnit, Moq, FluentAssertions, UI automation (FlaUI, WinAppDriver, Appium) |
+| Tests | xUnit v3 with hand-written fakes (NSubstitute only through an ADR); pre-commit hook | MSTest, NUnit, Moq, FluentAssertions, UI automation (FlaUI, WinAppDriver, Appium) |
 | Installer | WiX Toolset v6 MSI | Inno Setup, NSIS, MSIX, ClickOnce, Velopack, Squirrel |
 | Packages | Central Package Management | Versions in `.csproj` files |
 | Solution file | `.slnx` | `.sln` |
@@ -73,7 +73,7 @@ Output:
 
 Reasons for the non-obvious choices:
 - **Dapper:** explicit SQL for recursive queries, full-text search and paging, with no hidden queries.
-- **xUnit v3 + NSubstitute:** no dependency with a paid license or telemetry, which rules out FluentAssertions and Moq.
+- **xUnit v3, fakes before mocks:** no dependency with a paid license or telemetry, which rules out FluentAssertions and Moq.
 - **`IMemoryCache`:** HybridCache only adds serialization in a single-process app.
 - **Fluent outline icons:** the same design language as Windows 11, they work on Windows 10, and they're MIT-licensed.
 - **No UI automation:** behavior is tested through ViewModels, which is faster and more reliable.

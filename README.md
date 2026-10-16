@@ -14,7 +14,7 @@ right-to-left support.
 - **A locked stack** so agents don't improvise: .NET 10, CommunityToolkit.Mvvm,
   Microsoft.Extensions.Hosting, Serilog, SQLite via Microsoft.Data.Sqlite +
   Dapper (numbered SQL migrations), IMemoryCache, System.Text.Json, resx
-  localization, xUnit v3 + NSubstitute, Central Package Management, `.slnx`,
+  localization, xUnit v3, Central Package Management, `.slnx`,
   `.bat` scripts.
 - **Localization that holds up** - dates and numbers follow the system locale,
   Arabic plurals via CLDR categories, Arabic text normalization for search,
